@@ -12,28 +12,21 @@
     </header>
     <main>
       <section id="source">
-        <p> ἀκτὶς <span class="ref" data-ref="c01">ἀελίου</span>, <span class="ref" data-ref="c02">τὸ κάλλιστον <span class="ref" data-ref="c03">ἑπταπύλῳ</span> φανὲν </span> </p>
-        <p> <span class="ref" data-ref="c02">Θήβᾳ <span class="ref" data-ref="c04">τῶν προτέρων</span> φάος,</span> </p>
-        <p> <span class="ref" data-ref="c05">ἐφάνθης</span> ποτʼ, ὦ <span class="ref" data-ref="c06">χρυσέας</span> </p>
-        <p> ἁμέρας <span class="ref" data-ref="c07">βλέφαρον</span>,</p>
-        <p> <span class="ref" data-ref="c08">Διρκαίων</span> ὑπὲρ ῥεέθρων μολοῦσα, </p>
-        <p> <span class="ref" data-ref="c09">τὸν λεύκασπιν Ἀργόθεν ἐκβάντα φῶτα</span> <span class="ref" data-ref="c10">πανσαγίᾳ</span> </p>
-        <p> <span class="ref" data-ref="c11">φυγάδα <span class="ref" data-ref="c12">πρόδρομον</span></span> <span class="ref" data-ref="c13"><span class="ref" data-ref="c14">ὀξυτέρῳ</span> κινήσασα χαλινῷ·</span> </p>
+        <h1>Smith 06</h1>
+        <p>The verbatim claim: “λελωφήκαμεν: rather rare, used by Thuc. with reference to sicknesses and grave misfortunes.”</p>
+        <p>Our interpretation: 1) rather rare = the odds of picking a verb with this lemma (λωφάω) from all verbs in the Perseus corpus is not very likely and 2) λελωφήκαμεν usually occurs in a context when Thucydides is discussing “sicknesses and grave misfortunes.”</p>
+        <h2>0) Requirements</h2>
+        <p>To run and tweak this analysis, you will need the following:</p>
+        <ul><li><p>this notebook</p></li><li><p>all_verb_lemmata.csv (counts of every verb’s lemma in the Perseus corpus)</p></li>
+          <li><p>the <a target="_blank" rel="noreferrer" href="https://pandas.pydata.org/docs/getting_started/index.html#installation" class="link">pandas</a> library</p></li></ul>
 
-        <h3>Χορός </h3>
-        <p> <span class="ref" data-ref="c15">ὃς ἐφʼ ἡμετέρᾳ γᾷ <span class="ref" data-ref="c16">Πολυνείκους</span></span> </p>
-        <p> <span class="ref" data-ref="c16"><span class="ref" data-ref="c17">ἀρθεὶς</span> <span class="ref" data-ref="c18">νεικέων</span></span> <span class="ref" data-ref="c18">ἐξ ἀμφιλόγων</span> </p>
-        <p> <span class="ref" data-ref="c19">ὀξέα κλάζων</span> </p>
-        <p> <span class="ref" data-ref="c20">ἀετὸς εἰς γᾶν ὣς <span class="ref" data-ref="c21">ὑπερέπτα</span></span>, </p>
-        <p> <span class="ref" data-ref="c22">λευκῆς χιόνος πτέρυγι</span> <span class="ref" data-ref="c23">στεγανός</span>,</p>
-        <p> πολλῶν μεθʼ <span class="ref" data-ref="c24">ὅπλων</span> </p>
-        <p> <span class="ref" data-ref="c24">ξύν θʼ ἱπποκόμοις κορύθεσσιν.</span> </p>
+        <h2>1) Rarity</h2>
+        <p>First, let’s import some necessary libraries and look at <strong>all_verb_lemmata.csv,</strong> which we can see is a list of verb lemmas and the number of times they occur in the Perseus corpus.</p>
 
-        <h3>Χορός </h3>
-        <p> <span class="ref" data-ref="c25">στὰς δʼ ὑπὲρ μελάθρων</span> <span class="ref" data-ref="c26"><span class="ref" data-ref="c27">φονώσαισιν</span> ἀμφιχανὼν κύκλῳ</span> </p>
-        <p> <span class="ref" data-ref="c26">λόγχαις</span> <span class="ref" data-ref="c28">ἑπτάπυλον στόμα</span> </p>
-        <p> <span class="ref" data-ref="c29">ἔβα</span>, <span class="ref" data-ref="c30">πρίν ποθʼ</span> ἁμετέρων </p>
-        <p> αἱμάτων <span class="ref" data-ref="c31">γένυσιν</span> πλησθῆναί τε καὶ <span class="ref" data-ref="c32">στεφάνωμα</span> πύργων </p>
+        <pre class="block overflow-auto p-3 myst-code-body hljs" style="background-color:unset"><code class="language-python" style="white-space:pre"><span><span class="hljs-keyword">import</span><span> pandas </span><span class="hljs-keyword">as</span><span> pd
+</span></span><span>
+</span><span><span>lemmata = pd.read_csv(</span><span class="hljs-string">'all_verb_lemmata.csv'</span><span>)
+</span></span><span><span>lemmata.sort_values(</span><span class="hljs-string">'count'</span><span>, ascending=</span><span class="hljs-literal">False</span><span>)[:</span><span class="hljs-number">20</span><span>]</span></span></code></pre>
 
       </section>
       <section id="commentary">
