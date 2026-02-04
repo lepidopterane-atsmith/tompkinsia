@@ -39,6 +39,9 @@ def create_engine_from_files(urns: List[str]):
     
     all_files = {}
     
+    if "ALL" in urns:
+        urns = all_urns
+
     #with st.spinner("Loading XML data..."):
         #print(urns) 
     for urn in urns:
@@ -58,11 +61,6 @@ def create_engine_from_files(urns: List[str]):
     # st.info("Ready to execute queries.")
     print("hi there")
     return create_query_engine(all_files)
-
-def create_engine(urns):
-    if "ALL" in urns:
-        urns = all_urns
-    return create_engine_from_files(urns)
 
 def word_search(engine, user_query):
     results = engine.query(user_query)
