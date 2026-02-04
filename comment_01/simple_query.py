@@ -2,7 +2,6 @@ import pandas as pd
 from typing import List
 import os
 import time
-from tqdm import tqdm
 import sys
 from engine import create_query_engine
 
@@ -41,7 +40,6 @@ def create_engine_from_files(urns: List[str]):
     
     if "ALL" in urns:
         urns = all_urns
-
     #with st.spinner("Loading XML data..."):
         #print(urns) 
     for urn in urns:
@@ -59,14 +57,8 @@ def create_engine_from_files(urns: List[str]):
     # where do thread errors happen???
     # st.success("XML data loaded successfully!")
     # st.info("Ready to execute queries.")
-    print("hi there")
     return create_query_engine(all_files)
 
 def word_search(engine, user_query):
     results = engine.query(user_query)
     return format_word_results(results)
-
-query_engine = create_engine_from_files(all_urns)
-results = query_engine.query(sys.argv[1])
-df_full = format_word_results(results)
-csv_full = df_full.to_csv(sys.argv[2], index=False)

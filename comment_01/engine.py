@@ -3,7 +3,6 @@ import xml.etree.ElementTree as ET
 from typing import List, Dict, Any, Optional, Union
 from dataclasses import dataclass
 from enum import Enum
-from tqdm import tqdm
 
 snt_count = 0
 
@@ -142,7 +141,6 @@ class GreekQueryEngine:
     return_parent = False
 
     def __init__(self, words: List[Word]):
-        print("hewwo")
         self.words = words
         self.words_by_id = {word.id: word for word in words}
         self.words_by_sentence = {}
