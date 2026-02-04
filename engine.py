@@ -1,0 +1,411 @@
+import re
+import xml.etree.ElementTree as ET
+from typing import List, Dict, Any, Optional, Union
+from dataclasses import dataclass
+from enum import Enum
+from tqdm import tqdm
+
+snt_count = 0
+
+class PartOfSpeech(Enum):
+    NOUN = "noun"
+    VERB = "verb"
+    PARTICIPLE = "participle"
+    ADJECTIVE = "adjective"
+    ADVERB = "adverb"
+    ARTICLE = "article"
+    PARTICLE = "particle"
+    CONJUNCTION = "conjunction"
+    PREPOSITION = "preposition"
+    PRONOUN = "pronoun"
+    NUMERAL = "numeral"
+    INTERJECTION = "interjection"
+    EXCLAMATION = "exclamation"
+    PUNCTUATION = "punctuation"
+    IRREGULAR = "irregular"
+
+@dataclass
+class Word:
+    """Represents a word in the Greek text with all its linguistic attributes."""
+    form: str
+    lemma: str
+    id: int
+    parent_id: int
+    sentence_id: int
+    urn: str
+    relation: str
+    part_of_speech: Optional[str] = None
+    person: Optional[str] = None
+    number: Optional[str] = None
+    tense: Optional[str] = None
+    mood: Optional[str] = None
+    voice: Optional[str] = None
+    gender: Optional[str] = None
+    case: Optional[str] = None
+    degree: Optional[str] = None
+    children: List['Word'] = None
+    
+    def __post_init__(self):
+        if self.children is None:
+            self.children = []
+
+class GreekTextParser:
+    """Parses Perseus Treebank XML data into Word objects."""
+    
+    def __init__(self):
+        self.postag_mappings = {
+            'part_of_speech': {
+                'n': 'noun', 'v': 'verb', 't': 'participle', 'a': 'adjective',
+                'd': 'adverb', 'l': 'article', 'g': 'particle', 'c': 'conjunction',
+                'r': 'preposition', 'p': 'pronoun', 'm': 'numeral', 'i': 'interjection',
+                'e': 'exclamation', 'u': 'punctuation', 'x': 'irregular'
+            },
+            'person': {'1': 'first', '2': 'second', '3': 'third'},
+            'number': {'s': 'singular', 'd': 'dual', 'p': 'plural'},
+            'tense': {
+                'p': 'present', 'i': 'imperfect', 'r': 'perfect', 'l': 'pluperfect',
+                't': 'future perfect', 'f': 'future', 'a': 'aorist'
+            },
+            'mood': {
+                'i': 'indicative', 's': 'subjunctive', 'o': 'optative', 'n': 'infinitive',
+                'm': 'imperative', 'd': 'gerund', 'g': 'gerundive'
+            },
+            'voice': {'a': 'active', 'p': 'passive', 'm': 'middle', 'e': 'mediopassive'},
+            'gender': {'m': 'masculine', 'f': 'feminine', 'n': 'neuter'},
+            'case': {
+                'n': 'nominative', 'g': 'genitive', 'd': 'dative', 'a': 'accusative',
+                'v': 'vocative', 'l': 'locative'
+            },
+            'degree': {'c': 'comparative', 's': 'superlative'}
+        }
+    
+    def parse_postag(self, postag: str) -> Dict[str, Optional[str]]:
+        """Parse a Perseus postag string into linguistic features."""
+        if len(postag) < 9:
+            postag = postag.ljust(9, '-')
+        
+        features = {}
+        mappings = [
+            ('part_of_speech', 0), ('person', 1), ('number', 2), ('tense', 3),
+            ('mood', 4), ('voice', 5), ('gender', 6), ('case', 7), ('degree', 8)
+        ]
+        
+        for feature_name, index in mappings:
+            char = postag[index]
+            if char != '-':
+                features[feature_name] = self.postag_mappings[feature_name].get(char)
+            else:
+                features[feature_name] = None
+        
+        return features
+    
+    def xml_to_words(self, xml_content: str, doc_urn: str) -> List[Word]:
+        #print("eyy im parsin here")
+        """Convert Perseus Treebank XML to Word objects."""
+        root = ET.fromstring(xml_content)
+        words = []
+        
+        for sentence in root.findall('.//sentence'):
+            sentence_id = int(sentence.get('id'))
+            
+            for word_node in sentence.findall('.//word'):
+                # Extract basic attributes
+                lemma = word_node.get('lemma', '').replace('1', '')
+                word_id = int(word_node.get('id'))
+                parent_id = int(word_node.get('head', 0))
+                form = word_node.get('form', '')
+                relation = word_node.get('relation', '')
+                postag = word_node.get('postag', '')
+                urn = doc_urn
+                
+                # Parse linguistic features
+                features = self.parse_postag(postag)
+                
+                # Create Word object
+                word = Word(
+                    form=form,
+                    lemma=lemma,
+                    id=word_id,
+                    parent_id=parent_id,
+                    sentence_id=sentence_id,
+                    urn=urn,
+                    relation=relation,
+                    **features
+                )
+                #print(word_id, urn)
+                words.append(word)
+        
+        return words
+
+class GreekQueryEngine:
+    """Query engine for searching Greek texts using CSS-like selectors."""
+    return_parent = False
+
+    def __init__(self, words: List[Word]):
+        print("hewwo")
+        self.words = words
+        self.words_by_id = {word.id: word for word in words}
+        self.words_by_sentence = {}
+        
+        # Group words by sentence
+        for word in words:
+            if word.sentence_id not in self.words_by_sentence:
+                self.words_by_sentence[word.sentence_id] = []
+            self.words_by_sentence[word.sentence_id].append(word)
+        
+        print(len(self.words_by_sentence))
+
+        # Build parent-child relationships
+        for word in words:
+            if word.parent_id in self.words_by_id:
+                parent = self.words_by_id[word.parent_id]
+                parent.children.append(word)
+    
+    def query(self, selector: str) -> List[Word]:
+        """Execute a query using CSS-like selector syntax."""
+        # Handle comma-separated selectors
+        print(selector)
+
+        if '&' in selector:
+            # how to use &
+            # lets say you want to just look for sentences that contain THING 1 and THING 2. 
+            # THING 1 & THING 2 give you results but just for every sentence with THING 1 and THING 2.
+            # multiple & support will only happen if i really desperately need it but lets hope not 
+            results = []
+            for sub_selector in selector.split('&'):
+                instance = [[str(i.urn)+" "+str(i.sentence_id), i] for i in self.query(sub_selector.strip())]
+                results.append(instance)
+            #print("results list lengths", len(results[0]), len(results[1]))
+
+            if len(results[0]) <= len(results[1]):
+                shorter_results = results[0]
+                longer_results = results[1]
+            else:
+                shorter_results = results[1]
+                longer_results = results[0]
+
+            longer_results_tags = [thing[0] for thing in longer_results]
+            
+            overlap = {s[0] for s in shorter_results if s[0] in longer_results_tags}
+
+            unique_overlap = []
+            first = True
+
+            ### THIS IS REALLY SPECIFIC - CHANGE BEFORE RUNNING WITH NON-SMITH05
+            for o in overlap:
+                short_ids = {s[1].id for s in shorter_results if s[0] == o}
+                long_ids = {s[1].id for s in longer_results if s[0] == o}
+
+                print(short_ids, "meow \n meow",long_ids, short_ids & long_ids)
+                # if each set has a member not in the other, ADD
+                if len(short_ids & long_ids) == 1:
+                    if first:
+                        print("first!", short_ids, long_ids)
+                        first = False
+                    unique_overlap.append(o)
+                
+                # get all items 
+                # if each item has its own id, put into unique_overlap
+
+            final_results = [s[1] for s in shorter_results if s[0] in unique_overlap]
+            final_results.extend([s[1] for s in longer_results if s[0] in unique_overlap])
+
+            return final_results
+        if ',' in selector:
+            results = []
+            for sub_selector in selector.split(','):
+                instance = [(str(i.urn)+str(i.id), i) for i in self.query(sub_selector.strip())]
+                print("instance contains ",len(instance)," members")
+                results.extend([i for i in instance if i[0] not in [r[0] for r in results]])
+            return [r[1] for r in results]  # Remove duplicates
+
+        # put this at the start of your query! could I make this a switch? yeah just didn't feel like it
+        if 'returnParent' in selector:
+            self.return_parent = True
+            selector = selector.replace('returnParent', '')
+        else:
+            self.return_parent = False
+
+        # Handle parent-child relationships (>)
+        if ' > ' in selector:
+            return self._handle_parent_child(selector)
+        # Handle adjacent words (+)
+        if ' + ' in selector:
+            return self._handle_adjacent(selector)
+        # Handle word order (~)
+        if ' ~ ' in selector:
+            return self._handle_word_order(selector)
+        # Handle single selector
+        return self._match_single_selector(selector)
+    
+    def _match_single_selector(self, selector: str) -> List[Word]:
+        """Match a single selector against all words."""
+        results = []
+        
+        for word in self.words:
+            if self._word_matches_selector(word, selector):
+                results.append(word)
+        
+        return results
+    
+    def _word_matches_selector(self, word: Word, selector: str) -> bool:
+        """Check if a word matches a selector."""
+        # Handle attribute selectors [attr=value]
+        attr_match = re.search(r'\[(\w+)=([^]]+)\]', selector)
+        if attr_match:
+            attr_name, attr_value = attr_match.groups()
+            if not hasattr(word, attr_name) or getattr(word, attr_name) != attr_value:
+                return False
+            selector = re.sub(r'\[(\w+)=([^]]+)\]', '', selector)
+        
+        # Handle :root pseudo-selector
+        if ':root' in selector:
+            if word.parent_id != 0 or word.relation == 'AuxK':
+                return False
+            selector = selector.replace(':root', '')
+        
+        # do not search alone! search with something more descriptive that points to it!
+        # :neighbor + γάρ is a good way to pull up postpositives, for instance
+        if ':neighbor' in selector:
+            return True
+            #selector = selector.replace(':neighbor', '')
+
+        # Handle :before() and :after() pseudo-selectors
+        before_match = re.search(r':before\(([^)]+)\)', selector)
+        if before_match:
+            inner_selector = before_match.group(1)
+            if not self._check_word_order_condition(word, inner_selector, 'before'):
+                return False
+            selector = re.sub(r':before\([^)]+\)', '', selector)
+        
+        after_match = re.search(r':after\(([^)]+)\)', selector)
+        if after_match:
+            inner_selector = after_match.group(1)
+            if not self._check_word_order_condition(word, inner_selector, 'after'):
+                return False
+            selector = re.sub(r':after\([^)]+\)', '', selector)
+        
+        # Handle linguistic pseudo-selectors
+        pseudo_selectors = re.findall(r':(\w+)', selector)
+        #print("pseudo-selectors: ", selector, pseudo_selectors)
+        for pseudo in pseudo_selectors:
+            if not self._matches_linguistic_feature(word, pseudo):
+                return False
+        
+        # Handle lemma (direct text match)
+        lemma_parts = re.sub(r':\w+|\[[^]]+\]', '', selector).strip()
+        if lemma_parts:
+            if word.lemma != lemma_parts:
+                return False
+        
+        return True
+    
+    def _matches_linguistic_feature(self, word: Word, feature: str) -> bool:
+        """Check if word matches a linguistic feature."""
+        # Check all possible attributes
+        attributes = [
+            'part_of_speech', 'person', 'number', 'tense', 'mood', 
+            'voice', 'gender', 'case', 'degree'
+        ]
+        
+        #print("feature: ", feature)
+        for attr in attributes:
+            if hasattr(word, attr) and getattr(word, attr) == feature:
+                return True
+        
+        return False
+    
+    def _handle_parent_child(self, selector: str) -> List[Word]:
+        """Handle parent > child relationships."""
+        parts = selector.split(' > ')
+        print(parts)
+        if len(parts) != 2:
+            return []
+        
+        parent_selector, child_selector = parts
+        parent_words = self._match_single_selector(parent_selector.strip())
+        #print(parent_selector, child_selector)
+        
+        results = []
+        for parent in parent_words:
+            parent_value = 0
+            for child in parent.children:
+                if self._word_matches_selector(child, child_selector.strip()):
+                    results.append(child)
+                    if parent_value == 0 and self.return_parent == True:
+                        results.append(parent)
+                        parent_value = 1
+        
+        return results
+    
+    def _handle_adjacent(self, selector: str) -> List[Word]:
+        """Handle adjacent word relationships (+)."""
+        parts = selector.split(' + ')
+        if len(parts) < 2:
+            return []
+        
+        results = []
+        for sentence_words in self.words_by_sentence.values():
+            # Sort by word ID (position in sentence)
+            sentence_words.sort(key=lambda w: w.id)
+            
+            for i in range(len(sentence_words) - len(parts) + 1):
+                match = True
+                for j, part in enumerate(parts):
+                    if not self._word_matches_selector(sentence_words[i + j], part.strip()):
+                        match = False
+                        break
+                
+                if match:
+                    results.extend(sentence_words[i:i + len(parts)])
+        
+        return results
+    
+    def _handle_word_order(self, selector: str) -> List[Word]:
+        """Handle word order relationships (~)."""
+        parts = selector.split(' ~ ')
+        if len(parts) != 2:
+            return []
+        
+        first_selector, second_selector = parts
+        first_words = self._match_single_selector(first_selector.strip())
+        second_words = self._match_single_selector(second_selector.strip())
+        
+        results = []
+        for first_word in first_words:
+            for second_word in second_words:
+                if (first_word.sentence_id == second_word.sentence_id and 
+                    first_word.id < second_word.id):
+                    results.append(first_word)
+                    results.append(second_word)
+        
+        return results
+    
+    def _check_word_order_condition(self, word: Word, selector: str, direction: str) -> bool:
+        """Check word order conditions for :before() and :after()."""
+        target_words = []
+        
+        # Find words in the same sentence that match the selector
+        sentence_words = self.words_by_sentence.get(word.sentence_id, [])
+        for w in sentence_words:
+            if self._word_matches_selector(w, selector):
+                target_words.append(w)
+        
+        # Check if any target words are in the correct direction
+        for target in target_words:
+            if direction == 'before' and word.id < target.id:
+                return True
+            elif direction == 'after' and word.id > target.id:
+                return True
+        
+        return False
+
+def create_query_engine(xml_docs: dict[str, str]) -> GreekQueryEngine:
+    #print("inside this function.")
+    parser = GreekTextParser()
+    all_words = []
+    print("loading ", len(xml_docs.items()), " items...")
+    for urn, content in xml_docs.items():
+        words = parser.xml_to_words(content, urn)
+        all_words.extend(words)
+    return GreekQueryEngine(all_words)
