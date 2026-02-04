@@ -59,6 +59,15 @@ def create_engine_from_files(urns: List[str]):
     print("hi there")
     return create_query_engine(all_files)
 
+def create_engine(urns):
+    if "ALL" in urns:
+        urns = all_urns
+    return create_engine_from_files(urns)
+
+def word_search(engine, user_query):
+    results = engine.query(user_query)
+    return format_word_results(results)
+
 query_engine = create_engine_from_files(all_urns)
 results = query_engine.query(sys.argv[1])
 df_full = format_word_results(results)
