@@ -18,6 +18,24 @@ header h1 {
   margin: 0;
   font-weight: 400;
 }
+pre {
+  padding: 5px;
+  background-color: #FFFF88;
+}
+
+blockquote{
+  color:darkcyan
+}
+
+code{
+  font-size: small;
+}
+
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 5px;
+}
 main {
   font-family: Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif;
   background: #EEE;

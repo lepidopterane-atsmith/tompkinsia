@@ -23,10 +23,234 @@
         <h2>1) Rarity</h2>
         <p>First, let’s import some necessary libraries and look at <strong>all_verb_lemmata.csv,</strong> which we can see is a list of verb lemmas and the number of times they occur in the Perseus corpus.</p>
 
-        <pre class="block overflow-auto p-3 myst-code-body hljs" style="background-color:unset"><code class="language-python" style="white-space:pre"><span><span class="hljs-keyword">import</span><span> pandas </span><span class="hljs-keyword">as</span><span> pd
+        <pre class="block overflow-auto p-3 myst-code-body hljs" style="background-color:#FFFF88"><code class="language-python" style="white-space:pre"><span><span class="hljs-keyword">import</span><span> pandas </span><span class="hljs-keyword">as</span><span> pd
 </span></span><span>
 </span><span><span>lemmata = pd.read_csv(</span><span class="hljs-string">'all_verb_lemmata.csv'</span><span>)
 </span></span><span><span>lemmata.sort_values(</span><span class="hljs-string">'count'</span><span>, ascending=</span><span class="hljs-literal">False</span><span>)[:</span><span class="hljs-number">20</span><span>]</span></span></code></pre>
+
+<div class="lm-Widget jp-OutputPrompt jp-OutputArea-prompt">[28]:</div><div class="lm-Widget jp-RenderedHTMLCommon jp-RenderedHTML jp-mod-trusted jp-OutputArea-output" data-mime-type="text/html"><div>
+
+<table border="1" border-collapse="collapse" border-style="single" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>lemma</th>
+      <th>count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th> 1050 </th>
+      <td> εἰμί </td>
+      <td> 209433 </td>
+    </tr>
+    <tr>
+      <th> 11096 </th>
+      <td> λέγω </td>
+      <td> 78161 </td>
+    </tr>
+    <tr>
+      <th> 45165 </th>
+      <td> γίγνομαι </td>
+      <td> 65809 </td>
+    </tr>
+    <tr>
+      <th> 21008 </th>
+      <td> ἔχω </td>
+      <td> 60845 </td>
+    </tr>
+    <tr>
+      <th> 25204 </th>
+      <td> ποιέω </td>
+      <td> 36583 </td>
+    </tr>
+    <tr>
+      <th> 49363 </th>
+      <td> φημί </td>
+      <td> 35067 </td>
+    </tr>
+    <tr>
+      <th> 49264 </th>
+      <td> δέω </td>
+      <td> 23717 </td>
+    </tr>
+    <tr>
+      <th> 42928 </th>
+      <td> δοκέω </td>
+      <td> 18658 </td>
+    </tr>
+    <tr>
+      <th> 14293 </th>
+      <td> ὁράω </td>
+      <td> 17522 </td>
+    </tr>
+    <tr>
+      <th> 42549 </th>
+      <td> λαμβάνω </td>
+      <td> 16627 </td>
+    </tr>
+    <tr>
+      <th> 45350 </th>
+      <td> καλέω </td>
+      <td> 14470 </td>
+    </tr>
+    <tr>
+      <th> 28383 </th>
+      <td> δίδωμι </td>
+      <td> 13962 </td>
+    </tr>
+    <tr>
+      <th> 50211 </th>
+      <td> δύναμαι </td>
+      <td> 13013 </td>
+    </tr>
+    <tr>
+      <th> 18255 </th>
+      <td> χράω </td>
+      <td> 12790 </td>
+    </tr>
+    <tr>
+      <th> 50271 </th>
+      <td> βούλομαι </td>
+      <td> 12462 </td>
+    </tr>
+    <tr>
+      <th> 16735 </th>
+      <td> οἶδα </td>
+      <td> 12020 </td>
+    </tr>
+    <tr>
+      <th> 13209 </th>
+      <td> ἔρχομαι </td>
+      <td> 11611 </td>
+    </tr>
+    <tr>
+      <th> 20480 </th>
+      <td> φαίνω </td>
+      <td> 11441 </td>
+    </tr>
+    <tr>
+      <th> 12879 </th>
+      <td> φέρω </td>
+      <td> 10231 </td>
+    </tr>
+    <tr>
+      <th> 42300 </th>
+      <td> ὑπάρχω </td>
+      <td> 10169 </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>These are the 20 most common lemmata in our lemma group. To evaluate how unlikely it is to pick λωφάω from this group, we should have other odds to compare it against. Calculating the same odds for the most common lemma (εἰμί), the 20th most common lemma (ὑπάρχω), and maybe one least common lemma should be a good set to help us see how rare or not rare λωφάω is. Let’s pick the least common lemma:</p>
+
+<pre class="block overflow-auto p-3 myst-code-body hljs" ><code class="language-python" style="white-space:pre"><span><span>lemmata.sort_values(</span><span class="hljs-string">'count'</span><span>, ascending=</span><span class="hljs-literal">False</span><span>)[-</span><span class="hljs-number">5</span><span>:]</span></span></code></pre>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>lemma</th>
+      <th>count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>50471</th>
+      <td>διατμάζω</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>50470</th>
+      <td>ὑποπέτομαι</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>50469</th>
+      <td>ἀνταναμένω</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>50467</th>
+      <td>ἀπκαλύπτω</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>50464</th>
+      <td>διάπλομαι</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+
+<div id="RtdJ0t5DLA" class="myst-jp-nb-block relative group/block"><p>διάπλομαι will do nicely, a single instance in a large set of lemmata is definitely rare.</p><p>Odds are calculated the following way: <strong>undesirable outcomes / desirable outcomes = x</strong> where we then say there is a 1 in x chance of the desirable outcome. In our case, let’s say that desirable outcomes are the counts associated with each lemma, and the undesirable outcomes can be calculated by subtracting each desirable outcome from the sum of everything in the <strong>count</strong> column.</p></div>
+
+<!-- this is. stretching the box. why. stop doing that  -->
+<pre ><code class="language-python" style="white-space:pre"><span><span>total_count = </span><span class="hljs-built_in">int</span><span>(lemmata[</span><span class="hljs-string">'count'</span><span>].</span><span class="hljs-built_in">sum</span><span>())
+</span></span><span>desirable_outcomes, undesirable_outcomes = [],[]
+</span><span><span>verbs = [</span><span class="hljs-string">"εἰμί"</span><span>, </span><span class="hljs-string">"ὑπάρχω"</span><span>, </span><span class="hljs-string">"λωφάω"</span><span>, </span><span class="hljs-string">"διάπλομαι"</span><span>]
+</span></span><span>
+</span><span><span></span><span class="hljs-keyword">for</span><span> i </span><span class="hljs-keyword">in</span><span> verbs:
+</span></span><span><span>    desirable_outcomes.extend(lemmata[lemmata[</span><span class="hljs-string">'lemma'</span><span>]== i][</span><span class="hljs-string">'count'</span><span>].values)
+</span></span><span><span>desirable_outcomes = [</span><span class="hljs-built_in">int</span><span>(i) </span><span class="hljs-keyword">for</span><span> i </span><span class="hljs-keyword">in</span><span> desirable_outcomes]
+</span></span><span>
+</span><span><span></span><span class="hljs-keyword">for</span><span> d </span><span class="hljs-keyword">in</span><span> desirable_outcomes:
+</span></span><span>    undesirable_outcomes.append(total_count-d)
+</span><span>
+</span><span><span></span><span class="hljs-keyword">for</span><span> e </span><span class="hljs-keyword">in</span><span> </span><span class="hljs-built_in">range</span><span>(</span><span class="hljs-number">4</span><span>):
+</span></span><span>    odds = undesirable_outcomes[e]/desirable_outcomes[e]
+</span><span><span>    </span><span class="hljs-built_in">print</span><span>(</span><span class="hljs-string">"The odds of picking"</span><span>,verbs[e],</span><span class="hljs-string">"from the lemmata group is 1 in"</span><span>,odds,</span><span class="hljs-string">"."</span><span>,sep=</span><span class="hljs-string">" "</span><span>)
+</span></span><span></span></code></pre>
+
+<code><p>The odds of picking εἰμί from the lemmata group is 1 in 9.224367697545278 .</p>
+<p>The odds of picking ὑπάρχω from the lemmata group is 1 in 209.57331104336708 .</p> 
+<p>The odds of picking λωφάω from the lemmata group is 1 in 41178.230769230766 .</p>
+<p> The odds of picking διάπλομαι from the lemmata group is 1 in 2141319.0 .
+</p></code>
+
+<p>The odds of picking λωφάω are about 200 times less than picking ὑπάρχω, and since 1 in ~40,000 is less than 1 in 10,000, which can also be thought of as the desired outcome representing .01% of a set, one could state that the occurrence of λωφάω is in fact uncommon enough to be rare. Now that we have established that λωφάω is rather rare, let us look at the second piece of this claim.</p>
+
+<h2 id="id-2-sicknesses-and-grave-misfortunes" class="relative group"><span class="heading-text">2) Sicknesses and Grave Misfortunes</span></h2>
+
+<p>First, we will look up where λωφάω occurs in Thucydides using <a target="_blank" rel="noreferrer" href="https://scaife.perseus.org/search/" class="link">Scaife’s Text Search</a>. As you can see, there are four instances in the History, which we will look at one by one.</p>
+
+<img id="qBlAhkfWfC" style="margin-left:auto;margin-right:auto" src="comment_01/image.png" width="100%" alt="Alt text baking in the oven" data-canonical-url="image.png" class="">
+
+<p>For each of these four instances, we will take a closer look and assess whether each instance supports or invalidates this assumption. Each passage is accompanied by translations from Charles Foster’s early 1900s editions.</p>
+
+<h3 id="instance-1-2-49-4" class="relative group"><span class="heading-text">Instance 1: 2.49.4</span></h3>
+
+<blockquote><p>λύγξ τε τοῖς πλέοσιν ἐνέπιπτε κενή, σπασμὸν ἐνδιδοῦσα ἰσχυρόν, τοῖς μὲν μετὰ ταῦτα λωφήσαντα, τοῖς δὲ καὶ πολλῷ ὕστερον.</p></blockquote>
+
+<blockquote><p>...and in most cases ineffectual retching followed producing violent convulsions, which sometimes abated directly, sometimes not until long afterwards.</p></blockquote>
+
+<p>This passage documents symptoms of the Athenian Plague, which was happening at the same time as the Peloponessian War. λωφήσαντα is certainly used in the context of a sickness.</p>
+
+<h3 id="instance-2-4-81-2" class="relative group"><span class="heading-text">Instance 2: 4.81.2</span></h3>
+
+<blockquote><p>τό τε γὰρ παραυτίκα ἑαυτὸν παρασχὼν δίκαιον καὶ μέτριον ἐς τὰς πόλεις ἀπέστησε τὰ πολλά, τὰ δὲ προδοσίᾳ εἷλε τῶν χωρίων, ὥστε τοῖς Λακεδαιμονίοις γίγνεσθαι ξυμβαίνειν τε βουλομένοις, ὅπερ ἐποίησαν, ἀνταπόδοσιν καὶ ἀποδοχὴν χωρίων καὶ τοῦ πολέμου ἀπὸ τῆς Πελοποννήσου λώφησιν· ἔς τε τὸν χρόνῳ ὕστερον μετὰ τὰ ἐκ Σικελίας πόλεμον ἡ τότε Βρασίδου ἀρετὴ καὶ ξύνεσις, τῶν μὲν πείρᾳ αἰσθομένων, τῶν δὲ ἀκοῇ νομισάντων, μάλιστα ἐπιθυμίαν ἐνεποίει τοῖς Ἀθηναίων ξυμμάχοις ἐς τοὺς Λακεδαιμονίους.</p></blockquote>
+
+<blockquote><p>For, at the present crisis, by showing himself just and moderate in his dealings with the cities he caused most of the places to revolt, and secured possession of others by the treachery of their inhabitants, so that when the Lacedaemonians wished to make terms with Athens, as they did ultimately, they had places to offer in exchange for places they wished to recover and were able to secure for the Peloponnesus a respite from the war; and in the later part of the war, after the events in Sicily, it was the virtue and tact which Brasidas had displayed at this time—qualities of which some had had experience, while others knew of them by report—that did most to inspire in the allies of the Athenians a sentiment favourable to the Lacedaemonians.</p></blockquote>
+
+<p>Foster translates λώφησιν as respite, as it is actually from the noun λώφησις and not the verb λωφάω. Technically, this does not count as an instance of λωφάω and will not be assessed, though it should be known that this word was mislabeled as a form of λωφάω in the treebanks being searched over for this part of the analysis.</p>
+
+<h3 id="instance-3-6-12-1" class="relative group"><span class="heading-text">Instance 3: 6.12.1</span></h3>
+
+<blockquote><p>‘καὶ μεμνῆσθαι χρὴ ἡμᾶς ὅτι νεωστὶ ἀπὸ νόσου μεγάλης καὶ πολέμου βραχύ τι λελωφήκαμεν, ὥστε καὶ χρήμασι καὶ τοῖς σώμασιν ηὐξῆσθαι·</p></blockquote>
+
+<blockquote><p>And we should remember that we have but lately recovered somewhat from a great pestilence and war, so as to recruit our strength both in money and in men;</p></blockquote>
+
+<p>Nicias is purposely invoking the Athenian recovery from the Athenian Plague, using the λελωφήκαμεν this comment and its claim are anchored on, in the context of a sickness.</p>
+
+<h3 id="instance-4-7-77-3" class="relative group"><span class="heading-text">Instance 4: 7.77.3</span></h3>
+
+<blockquote><p>‘καὶ μεμνῆσθαι χρὴ ἡμᾶς ὅτι νεωστὶ ἀπὸ νόσου μεγάλης καὶ πολέμου βραχύ τι λελωφήκαμεν, ὥστε καὶ χρήμασι καὶ τοῖς σώμασιν ηὐξῆσθαι·</p></blockquote>
+
+<blockquote><p>And we should remember that we have but lately recovered somewhat from a great pestilence and war, so as to recruit our strength both in money and in men;</p></blockquote>
+
+<p>Nicias is purposely invoking the Athenian recovery from the Athenian Plague, using the λελωφήκαμεν this comment and its claim are anchored on, in the context of a sickness.</p>
+
+<p>Smith says that Thucydides usually uses this in the context of grave misfortunes and sicknesses, leading the uncritical reader to assume that he uses this lemma more than three times, and that there may be some instances that occur not in the context of sickness but in the former context, along with a handful of instances that do not mention sickness or misfortune. The analysis in this notebook shows that Thucydides uses this word thrice, always in the context of the Athenian Plague. While this could validate Smith’s comment, it would be remiss not to remark that the wording of the claim misleads the author to believe that this is a more frequent and less specific pattern than it is. Combined with earlier confirmation that λωφάω is in fact rare, we find here that these claims hold up, even if the wording on one is somewhat misleading.</p>
 
       </section>
       <section id="commentary">
