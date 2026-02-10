@@ -1,5 +1,8 @@
 console.log("PAGE RELOADED")
 document.addEventListener('DOMContentLoaded', () => {
+  const show_analysis = document.getElementById('analysis');
+
+
   const refs = document.querySelectorAll('.ref');
   const lemmas = document.querySelectorAll('.lemma');
 

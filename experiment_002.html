@@ -8,11 +8,12 @@
   </head>
   <body>
     <header>
-      <h1>Experiment 2</h1>
+      <h1>Tompkinsia</h1>
     </header>
     <main>
       <section id="source">
         <h1>Smith 06</h1>
+        <button id="headlessui-menu-button-:Rs8ucp:" onclick="document.location='comment_01/verification.ipynb'"><span class="sr-only">Download </span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon" width="1.25rem" height="1.25rem" class="myst-fm-downloads-icon"><title>Download </title><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"></path></svg></button>
         <p>The verbatim claim: “λελωφήκαμεν: rather rare, used by Thuc. with reference to sicknesses and grave misfortunes.”</p>
         <p>Our interpretation: 1) rather rare = the odds of picking a verb with this lemma (λωφάω) from all verbs in the Perseus corpus is not very likely and 2) λελωφήκαμεν usually occurs in a context when Thucydides is discussing “sicknesses and grave misfortunes.”</p>
         <h2>0) Requirements</h2>
@@ -212,13 +213,123 @@
 
 <h2 id="id-2-sicknesses-and-grave-misfortunes" class="relative group"><span class="heading-text">2) Sicknesses and Grave Misfortunes</span></h2>
 
-<p>First, we will look up where λωφάω occurs in Thucydides using <a target="_blank" rel="noreferrer" href="https://scaife.perseus.org/search/" class="link">Scaife’s Text Search</a>. As you can see, there are four instances in the History, which we will look at one by one.</p>
+<p>First, we will look up where λωφάω occurs in Thucydides’ works using our bespoke query engine (under development).</p>
 
-<img id="qBlAhkfWfC" style="margin-left:auto;margin-right:auto" src="comment_01/image.png" width="100%" alt="Alt text baking in the oven" data-canonical-url="image.png" class="">
+<!-- ehehhehe -->
+<pre class="block overflow-auto p-3 myst-code-body hljs"><code class="language-python" style="white-space:pre"><span><span class="hljs-keyword">from</span><span> simple_query </span><span class="hljs-keyword">import</span><span> create_engine_from_files, word_search
+</span></span><span>
+</span><span><span>query_engine = create_engine_from_files(urns=[</span><span class="hljs-string">'0003-001'</span><span>, </span><span class="hljs-string">'0003-002'</span><span>])
+</span></span><span><span>results = word_search(query_engine, </span><span class="hljs-string">"λωφάω"</span><span>)
+</span></span><span>results</span></code></pre>
+
+<pre class="myst-jp-stream-output text-sm font-thin font-system" style="background-color: unset;"><code><span>urns in system:  2
+loading  2  items...
+6055
+λωφάω
+</span></code></pre>
+
+<div class="lm-Widget jp-RenderedHTMLCommon jp-RenderedHTML jp-mod-trusted jp-OutputArea-output" data-mime-type="text/html"><div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe" style="font-size: small;">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Form</th>
+      <th>Lemma</th>
+      <th>Part of Speech</th>
+      <th>Case</th>
+      <th>Number</th>
+      <th>Tense</th>
+      <th>Mood</th>
+      <th>Voice</th>
+      <th>Relation</th>
+      <th>Sentence ID</th>
+      <th>Word ID</th>
+      <th>Document URN</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>λωφήσαντα</td>
+      <td>λωφάω</td>
+      <td>verb</td>
+      <td>accusative</td>
+      <td>singular</td>
+      <td>aorist</td>
+      <td></td>
+      <td>active</td>
+      <td>ATR</td>
+      <td>1281</td>
+      <td>7271687</td>
+      <td>0003-001</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>λώφησιν</td>
+      <td>λωφάω</td>
+      <td>verb</td>
+      <td></td>
+      <td>singular</td>
+      <td>present</td>
+      <td>indicative</td>
+      <td>active</td>
+      <td>CO</td>
+      <td>3038</td>
+      <td>7318243</td>
+      <td>0003-001</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>λελωφήκαμεν</td>
+      <td>λωφάω</td>
+      <td>verb</td>
+      <td></td>
+      <td>plural</td>
+      <td>perfect</td>
+      <td>indicative</td>
+      <td>active</td>
+      <td>OBJ</td>
+      <td>4150</td>
+      <td>7348288</td>
+      <td>0003-001</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>λωφήσειαν</td>
+      <td>λωφάω</td>
+      <td>verb</td>
+      <td></td>
+      <td>plural</td>
+      <td>aorist</td>
+      <td>optative</td>
+      <td>active</td>
+      <td>PRED</td>
+      <td>5273</td>
+      <td>7382417</td>
+      <td>0003-001</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+
+<p>As you can see, there are four instances in the History, which we will look at one by one. We can open up the History’s <a target="_blank" rel="noreferrer" href="https://github.com/lepidopterane-atsmith/tompkinsia/raw/refs/heads/main/comment_01/data/xml/0003-001.xml" class="link">treebank file</a> and use cmd/ctrl + F to search for <code>sentence id=</code><strong>“Sentence ID in the table above”</strong> and match those to subdoc notes and the first four words, as seen in the following subsections. This makes sure we are looking at the right instance, and you can do something similar with the Word ID.</p>
 
 <p>For each of these four instances, we will take a closer look and assess whether each instance supports or invalidates this assumption. Each passage is accompanied by translations from Charles Foster’s early 1900s editions.</p>
 
-<h3 id="instance-1-2-49-4" class="relative group"><span class="heading-text">Instance 1: 2.49.4</span></h3>
+<h3 id="instance-1-2-49-4" class="relative group"><span class="heading-text">Instance 1: 2.49.4, Sentence ID 1281, λύγξ τε τοῖς πλέοσιν</span></h3>
 
 <blockquote><p>λύγξ τε τοῖς πλέοσιν ἐνέπιπτε κενή, σπασμὸν ἐνδιδοῦσα ἰσχυρόν, τοῖς μὲν μετὰ ταῦτα λωφήσαντα, τοῖς δὲ καὶ πολλῷ ὕστερον.</p></blockquote>
 
@@ -226,7 +337,7 @@
 
 <p>This passage documents symptoms of the Athenian Plague, which was happening at the same time as the Peloponessian War. λωφήσαντα is certainly used in the context of a sickness.</p>
 
-<h3 id="instance-2-4-81-2" class="relative group"><span class="heading-text">Instance 2: 4.81.2</span></h3>
+<h3 id="instance-2-4-81-2" class="relative group"><span class="heading-text">Instance 2: 4.81.2, Sentence ID 3038, τό τε γὰρ παραυτίκα</span></h3>
 
 <blockquote><p>τό τε γὰρ παραυτίκα ἑαυτὸν παρασχὼν δίκαιον καὶ μέτριον ἐς τὰς πόλεις ἀπέστησε τὰ πολλά, τὰ δὲ προδοσίᾳ εἷλε τῶν χωρίων, ὥστε τοῖς Λακεδαιμονίοις γίγνεσθαι ξυμβαίνειν τε βουλομένοις, ὅπερ ἐποίησαν, ἀνταπόδοσιν καὶ ἀποδοχὴν χωρίων καὶ τοῦ πολέμου ἀπὸ τῆς Πελοποννήσου λώφησιν· ἔς τε τὸν χρόνῳ ὕστερον μετὰ τὰ ἐκ Σικελίας πόλεμον ἡ τότε Βρασίδου ἀρετὴ καὶ ξύνεσις, τῶν μὲν πείρᾳ αἰσθομένων, τῶν δὲ ἀκοῇ νομισάντων, μάλιστα ἐπιθυμίαν ἐνεποίει τοῖς Ἀθηναίων ξυμμάχοις ἐς τοὺς Λακεδαιμονίους.</p></blockquote>
 
@@ -234,7 +345,7 @@
 
 <p>Foster translates λώφησιν as respite, as it is actually from the noun λώφησις and not the verb λωφάω. Technically, this does not count as an instance of λωφάω and will not be assessed, though it should be known that this word was mislabeled as a form of λωφάω in the treebanks being searched over for this part of the analysis.</p>
 
-<h3 id="instance-3-6-12-1" class="relative group"><span class="heading-text">Instance 3: 6.12.1</span></h3>
+<h3 id="instance-3-6-12-1" class="relative group"><span class="heading-text">Instance 3: 6.12.1, Sentence ID 4150, ‘καὶ μεμνῆσθαι χρὴ ἡμᾶς</span></h3>
 
 <blockquote><p>‘καὶ μεμνῆσθαι χρὴ ἡμᾶς ὅτι νεωστὶ ἀπὸ νόσου μεγάλης καὶ πολέμου βραχύ τι λελωφήκαμεν, ὥστε καὶ χρήμασι καὶ τοῖς σώμασιν ηὐξῆσθαι·</p></blockquote>
 
@@ -242,15 +353,15 @@
 
 <p>Nicias is purposely invoking the Athenian recovery from the Athenian Plague, using the λελωφήκαμεν this comment and its claim are anchored on, in the context of a sickness.</p>
 
-<h3 id="instance-4-7-77-3" class="relative group"><span class="heading-text">Instance 4: 7.77.3</span></h3>
+<h3 id="instance-4-7-77-3" class="relative group"><span class="heading-text">Instance 4: 7.77.3, Sentence ID 5273, τάχα δὲ ἂν καὶ</span></h3>
 
-<blockquote><p>‘καὶ μεμνῆσθαι χρὴ ἡμᾶς ὅτι νεωστὶ ἀπὸ νόσου μεγάλης καὶ πολέμου βραχύ τι λελωφήκαμεν, ὥστε καὶ χρήμασι καὶ τοῖς σώμασιν ηὐξῆσθαι·</p></blockquote>
+<blockquote><p>ἀνθ’ ὧν ἡ μὲν ἐλπὶς ὅμως θρασεῖα τοῦ μέλλοντος, αἱ δὲ ξυμφοραὶ οὐ κατ’ ἀξίαν δὴ φοβοῦσιν. τάχα δὲ ἂν καὶ λωφήσειαν· ἱκανὰ γὰρ τοῖς τε πολεμίοις ηὐτύχηται, καὶ εἴ τῳ θεῶν ἐπίφθονοι ἐστρατεύσαμεν, ἀποχρώντως ἤδη τετιμωρήμεθα.</p></blockquote>
 
-<blockquote><p>And we should remember that we have but lately recovered somewhat from a great pestilence and war, so as to recruit our strength both in money and in men;</p></blockquote>
+<blockquote><p>Wherefore, in spite of all, my hope for the future is still confident, and our calamities do not frighten me as much as they might well have done. Perhaps they may even abate; for our enemies have had good fortune enough, and if we have roused the jealousy of any of the gods by our expedition we have already been punished sufficiently.</p></blockquote>
 
-<p>Nicias is purposely invoking the Athenian recovery from the Athenian Plague, using the λελωφήκαμεν this comment and its claim are anchored on, in the context of a sickness.</p>
+<p>Nicias is using what he knows of rhetoric and past Athenian might to reinvigorate Athenian forces that have recently experienced a great loss. His language is somewhat ambiguous as he documents times when in the face of some calamity Athenians find a way forward nonetheless, but this seems more entrenched in the “grave misfortunes” part of the claim than the “sicknesses” part.</p>
 
-<p>Smith says that Thucydides usually uses this in the context of grave misfortunes and sicknesses, leading the uncritical reader to assume that he uses this lemma more than three times, and that there may be some instances that occur not in the context of sickness but in the former context, along with a handful of instances that do not mention sickness or misfortune. The analysis in this notebook shows that Thucydides uses this word thrice, always in the context of the Athenian Plague. While this could validate Smith’s comment, it would be remiss not to remark that the wording of the claim misleads the author to believe that this is a more frequent and less specific pattern than it is. Combined with earlier confirmation that λωφάω is in fact rare, we find here that these claims hold up, even if the wording on one is somewhat misleading.</p>
+<p>Smith says that Thucydides usually uses this in the context of grave misfortunes and sicknesses, leading the uncritical reader to assume that he uses this lemma more than three times, and that there may be some instances that occur not in the context of sickness but in the former context, along with a handful of instances that do not mention sickness or misfortune. The analysis in this notebook shows that Thucydides uses this word thrice, always in the context of the Athenian Plague, except for when Nicias is discussing grave misfortunes past and present in 7.77.3, and there is no direct mention of the plague. While this could validate Smith’s comment, it would be remiss not to remark that the wording of the claim misleads the author to believe that this is a more frequent and less specific pattern than it is. Combined with earlier confirmation that λωφάω is in fact rare, we find here that these claims hold up, even if the wording on one is somewhat misleading.</p>
 
       </section>
       <section id="commentary">
