@@ -9,12 +9,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const analysis_toggle = document.getElementById('analysis_toggle');
 
   analysis_toggle.addEventListener('click', function() {
-    if (this.innerHTML.indexOf("Expand") > -1) {
-      this.innerHTML = "Collapse Claim Analysis";
+    if (this.innerHTML.indexOf("Show") > -1) {
+      this.innerHTML = "Hide Claim Analysis";
       source_text.style.display = "none";
       notebook.style.display = "block";
     } else {
-      this.innerHTML = "Expand Claim Analysis";
+      this.innerHTML = "Show Claim Analysis";
       notebook.style.display = "none";
       source_text.style.display = "block";
     }
