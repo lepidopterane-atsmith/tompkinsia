@@ -1,5 +1,5 @@
 :root {
-  --secondary-background: #2C3E50;
+  --secondary-background: midnightblue;
 }
 body {
   font-family: Seravek, 'Gill Sans Nova', Ubuntu, Calibri, 'DejaVu Sans', source-sans-pro, sans-serif;  
@@ -42,6 +42,13 @@ div#notebook {
   max-height: 75vh;
   overflow-y: auto;
   box-sizing: border-box;
+}
+
+p#takeaway{
+  border-radius: 5px;
+  border: 1px solid black;
+  padding: 5px;
+  background-color:beige; 
 }
 
 main {
