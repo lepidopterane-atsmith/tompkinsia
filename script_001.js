@@ -1,44 +1,24 @@
-console.log("PAGE RELOADED")
+const notebook = document.getElementById("notebook");
+const source_text = document.getElementById("source_text");
+notebook.style.display = "none";
+
+const source = document.getElementById("source");
+console.log(source.style.height);
+
 document.addEventListener('DOMContentLoaded', () => {
-  const show_analysis = document.getElementById('analysis');
+  const analysis_toggle = document.getElementById('analysis_toggle');
 
+  analysis_toggle.addEventListener('click', function() {
+    if (this.innerHTML.indexOf("Expand") > -1) {
+      this.innerHTML = "Collapse Claim Analysis";
+      source_text.style.display = "none";
+      notebook.style.display = "block";
+    } else {
+      this.innerHTML = "Expand Claim Analysis";
+      notebook.style.display = "none";
+      source_text.style.display = "block";
+    }
+  }
+  );
 
-  const refs = document.querySelectorAll('.ref');
-  const lemmas = document.querySelectorAll('.lemma');
-
-  refs.forEach(ref => {
-    
-    ref.addEventListener('click', function() {
-      const refId = this.getAttribute('data-ref');
-      const targetComment = document.getElementById(refId); 
-      var text = this.innerHTML;
-      
-      refs.forEach(ref => { 
-        const refId = ref.getAttribute('data-ref');
-        const targetComment = document.getElementById(refId);
-        
-        if (ref.innerHTML.indexOf(text) == -1 && text.indexOf(ref.innerHTML) == -1) {
-          targetComment.classList.remove('show');
-          ref.classList.remove('active');
-        } else {
-          //console.log(targetComment.children[0].innerHTML+" ***  "+text);
-          ref.classList.add('active');
-          //targetComment.classList.add('show');
-        } 
-      })
-
-      if (targetComment) {
-        if (targetComment.classList.contains('show')) {
-          targetComment.classList.remove('show');
-          //this.classList.remove('active');
-        } else {
-          ref.classList.add('active');
-          targetComment.classList.add('show');
-          targetComment.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-      
-      }
-      console.log(refId)
-    });
-  });
 });
