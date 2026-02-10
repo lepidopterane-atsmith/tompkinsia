@@ -1,5 +1,5 @@
 # Tompkinsia
-## a data-driven commentary augmentation system
+## a data-driven commentary augmentation design
 
 ## Getting Started
 - Clone this repo
