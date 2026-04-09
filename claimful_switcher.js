@@ -6,20 +6,20 @@ const source = document.getElementById("source");
 console.log(source.style.height);
 
 document.addEventListener('DOMContentLoaded', () => {
-  const analysis_toggle = document.getElementById('analysis_toggle');
-  // make toggles a class, get all toggles, give them bespoke listener
+  const toggles = document.querySelectorAll('.analysis_toggle');
 
-  analysis_toggle.addEventListener('click', function() {
-    if (this.innerHTML.indexOf("Show") > -1) {
-      this.innerHTML = "Hide Claim Analysis";
+  toggles.forEach( toggle => {
+    toggle.addEventListener('click', function(){
+      if (this.innerHTML.indexOf("Show") > -1) {
+      toggles.forEach( hide_toggle => {hide_toggle.innerHTML = "Hide Claim Analysis";});
       source_text.style.display = "none";
       notebook.style.display = "block";
     } else {
-      this.innerHTML = "Show Claim Analysis";
+      toggles.forEach( show_toggle => {show_toggle.innerHTML = "Show Claim Analysis";});
       notebook.style.display = "none";
       source_text.style.display = "block";
     }
-  }
-  );
+    } );
+  });
 
 });
