@@ -8,222 +8,36 @@
   </head>
   <body>
 
-<div id="notebook" style="padding: 5px"> <h1>The Verse End Formula</h1>
+<div id="notebook" style="padding: 5px;"> <h1>The Verse End Formula</h1>
         <p>The verbatim claim: “ἔπος ηὔδα: a VE formula (14x Il., 1x Od.); always with a preceding participle that determines the tone of the following speech more precisely (ὁμοκλήσας only here; elsewhere δακρύσας, εὐχόμενος, ὀλοφὐρομενος, etc.).”</p>
         <p>Our interpretation: 1) If ἔπος ηὔδα is a VE formula, because VE means verse end, these words are found next to each other at the end of a line, and 2) ἔπος ηὔδα will always be preceded within the line by a participle.</p>
         <h2>Requirements</h2>
         <p>To run and tweak this analysis, you will need the following:</p>
-        <ul><li><p>this notebook</p></li><li><p>all_verb_lemmata.csv (counts of every verb’s lemma in the Perseus corpus)</p></li>
+        <ul><li><p>this notebook, with its home directory</p></li>
           <li><p>the <a target="_blank" rel="noreferrer" href="https://pandas.pydata.org/docs/getting_started/index.html#installation" class="link">pandas</a> library</p></li></ul>
 
         <h2>A Formulaic Search</h2>
-        <p>First, let’s import some necessary libraries and look at <strong>all_verb_lemmata.csv,</strong> which we can see is a list of verb lemmas and the number of times they occur in the Perseus corpus.</p>
+        <p>First, let’s import some necessary libraries. This second one is our bespoke query library for the Greek lit corpus.</p> 
+        
+        <pre class="block overflow-auto p-3 myst-code-body hljs" ><code class="language-python" ><span><span class="hljs-keyword">import</span><span> pandas </span><span class="hljs-keyword">as</span><span> pd
+</span></span><span><span></span><span class="hljs-keyword">from</span><span> simple_query </span><span class="hljs-keyword">import</span><span> create_engine_from_files, word_search, all_urns</span></span></code></pre>
 
-        <pre class="block overflow-auto p-3 myst-code-body hljs" style="background-color:#FFFF88"><code class="language-python" style="white-space:pre"><span><span class="hljs-keyword">import</span><span> pandas </span><span class="hljs-keyword">as</span><span> pd
+For this objective, let’s search our Greek lit corpus for instances of ἔπος ηὔδα.
+
+        <pre><code class="language-python" style="white-space:pre"><span><span>results = pd.DataFrame({</span><span class="hljs-string">'Form'</span><span>: pd.Series([]), </span><span class="hljs-string">'Lemma'</span><span>: pd.Series([]), </span><span class="hljs-string">'Part of Speech'</span><span>: pd.Series([]),</span><span class="hljs-string">'Case'</span><span>: pd.Series([]), </span><span class="hljs-string">'Number'</span><span>: pd.Series([]), </span><span class="hljs-string">'Tense'</span><span>: pd.Series([]),
+</span></span><span><span>                        </span><span class="hljs-string">'Mood'</span><span>: pd.Series([]), </span><span class="hljs-string">'Voice'</span><span>: pd.Series([]), </span><span class="hljs-string">'Relation'</span><span>: pd.Series([]), </span><span class="hljs-string">'Sentence ID'</span><span>: pd.Series([]), </span><span class="hljs-string">'Word ID'</span><span>: pd.Series([]), 
+</span></span><span><span>                        </span><span class="hljs-string">'Document URN'</span><span>: pd.Series([])})
 </span></span><span>
-</span><span><span>lemmata = pd.read_csv(</span><span class="hljs-string">'../all_verb_lemmata.csv'</span><span>)
-</span></span><span><span>lemmata.sort_values(</span><span class="hljs-string">'count'</span><span>, ascending=</span><span class="hljs-literal">False</span><span>)[:</span><span class="hljs-number">20</span><span>]</span></span></code></pre>
-
-<div class="lm-Widget jp-OutputPrompt jp-OutputArea-prompt">[28]:</div><div class="lm-Widget jp-RenderedHTMLCommon jp-RenderedHTML jp-mod-trusted jp-OutputArea-output" data-mime-type="text/html"><div>
-
-<table border="1" border-collapse="collapse" border-style="single" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>lemma</th>
-      <th>count</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th> 1050 </th>
-      <td> εἰμί </td>
-      <td> 209433 </td>
-    </tr>
-    <tr>
-      <th> 11096 </th>
-      <td> λέγω </td>
-      <td> 78161 </td>
-    </tr>
-    <tr>
-      <th> 45165 </th>
-      <td> γίγνομαι </td>
-      <td> 65809 </td>
-    </tr>
-    <tr>
-      <th> 21008 </th>
-      <td> ἔχω </td>
-      <td> 60845 </td>
-    </tr>
-    <tr>
-      <th> 25204 </th>
-      <td> ποιέω </td>
-      <td> 36583 </td>
-    </tr>
-    <tr>
-      <th> 49363 </th>
-      <td> φημί </td>
-      <td> 35067 </td>
-    </tr>
-    <tr>
-      <th> 49264 </th>
-      <td> δέω </td>
-      <td> 23717 </td>
-    </tr>
-    <tr>
-      <th> 42928 </th>
-      <td> δοκέω </td>
-      <td> 18658 </td>
-    </tr>
-    <tr>
-      <th> 14293 </th>
-      <td> ὁράω </td>
-      <td> 17522 </td>
-    </tr>
-    <tr>
-      <th> 42549 </th>
-      <td> λαμβάνω </td>
-      <td> 16627 </td>
-    </tr>
-    <tr>
-      <th> 45350 </th>
-      <td> καλέω </td>
-      <td> 14470 </td>
-    </tr>
-    <tr>
-      <th> 28383 </th>
-      <td> δίδωμι </td>
-      <td> 13962 </td>
-    </tr>
-    <tr>
-      <th> 50211 </th>
-      <td> δύναμαι </td>
-      <td> 13013 </td>
-    </tr>
-    <tr>
-      <th> 18255 </th>
-      <td> χράω </td>
-      <td> 12790 </td>
-    </tr>
-    <tr>
-      <th> 50271 </th>
-      <td> βούλομαι </td>
-      <td> 12462 </td>
-    </tr>
-    <tr>
-      <th> 16735 </th>
-      <td> οἶδα </td>
-      <td> 12020 </td>
-    </tr>
-    <tr>
-      <th> 13209 </th>
-      <td> ἔρχομαι </td>
-      <td> 11611 </td>
-    </tr>
-    <tr>
-      <th> 20480 </th>
-      <td> φαίνω </td>
-      <td> 11441 </td>
-    </tr>
-    <tr>
-      <th> 12879 </th>
-      <td> φέρω </td>
-      <td> 10231 </td>
-    </tr>
-    <tr>
-      <th> 42300 </th>
-      <td> ὑπάρχω </td>
-      <td> 10169 </td>
-    </tr>
-  </tbody>
-</table>
-
-<p>These are the 20 most common lemmata in our lemma group. To evaluate how unlikely it is to pick λωφάω from this group, we should have other odds to compare it against. Calculating the same odds for the most common lemma (εἰμί), the 20th most common lemma (ὑπάρχω), and maybe one least common lemma should be a good set to help us see how rare or not rare λωφάω is. Let’s pick the least common lemma:</p>
-
-<pre class="block overflow-auto p-3 myst-code-body hljs" ><code class="language-python" style="white-space:pre"><span><span>lemmata.sort_values(</span><span class="hljs-string">'count'</span><span>, ascending=</span><span class="hljs-literal">False</span><span>)[-</span><span class="hljs-number">5</span><span>:]</span></span></code></pre>
-
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>lemma</th>
-      <th>count</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>50471</th>
-      <td>διατμάζω</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>50470</th>
-      <td>ὑποπέτομαι</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>50469</th>
-      <td>ἀνταναμένω</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>50467</th>
-      <td>ἀπκαλύπτω</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>50464</th>
-      <td>διάπλομαι</td>
-      <td>1</td>
-    </tr>
-  </tbody>
-</table>
-
-<div id="RtdJ0t5DLA" class="myst-jp-nb-block relative group/block"><p>διάπλομαι will do nicely, a single instance in a large set of lemmata is definitely rare.</p><p>Odds are calculated the following way: <strong>undesirable outcomes / desirable outcomes = x</strong> where we then say there is a 1 in x chance of the desirable outcome. In our case, let’s say that desirable outcomes are the counts associated with each lemma, and the undesirable outcomes can be calculated by subtracting each desirable outcome from the sum of everything in the <strong>count</strong> column.</p></div>
-
-<!-- this is. stretching the box. why. stop doing that  -->
-<pre ><code class="language-python" style="white-space:pre"><span><span>total_count = </span><span class="hljs-built_in">int</span><span>(lemmata[</span><span class="hljs-string">'count'</span><span>].</span><span class="hljs-built_in">sum</span><span>())
-</span></span><span>desirable_outcomes, undesirable_outcomes = [],[]
-</span><span><span>verbs = [</span><span class="hljs-string">"εἰμί"</span><span>, </span><span class="hljs-string">"ὑπάρχω"</span><span>, </span><span class="hljs-string">"λωφάω"</span><span>, </span><span class="hljs-string">"διάπλομαι"</span><span>]
+</span><span><span></span><span class="hljs-keyword">for</span><span> i </span><span class="hljs-keyword">in</span><span> all_urns:
+</span></span><span><span>    </span><span class="hljs-keyword">try</span><span>:
+</span></span><span>        query_engine = create_engine_from_files(urns=[i])
+</span><span><span>        results = pd.concat([results, word_search(query_engine, </span><span class="hljs-string">"ἔπος + αὐδάω"</span><span> )])
+</span></span><span><span>    </span><span class="hljs-keyword">except</span><span>:
+</span></span><span><span>        </span><span class="hljs-built_in">print</span><span>(</span><span class="hljs-string">"oops"</span><span>)
 </span></span><span>
-</span><span><span></span><span class="hljs-keyword">for</span><span> i </span><span class="hljs-keyword">in</span><span> verbs:
-</span></span><span><span>    desirable_outcomes.extend(lemmata[lemmata[</span><span class="hljs-string">'lemma'</span><span>]== i][</span><span class="hljs-string">'count'</span><span>].values)
-</span></span><span><span>desirable_outcomes = [</span><span class="hljs-built_in">int</span><span>(i) </span><span class="hljs-keyword">for</span><span> i </span><span class="hljs-keyword">in</span><span> desirable_outcomes]
-</span></span><span>
-</span><span><span></span><span class="hljs-keyword">for</span><span> d </span><span class="hljs-keyword">in</span><span> desirable_outcomes:
-</span></span><span>    undesirable_outcomes.append(total_count-d)
-</span><span>
-</span><span><span></span><span class="hljs-keyword">for</span><span> e </span><span class="hljs-keyword">in</span><span> </span><span class="hljs-built_in">range</span><span>(</span><span class="hljs-number">4</span><span>):
-</span></span><span>    odds = undesirable_outcomes[e]/desirable_outcomes[e]
-</span><span><span>    </span><span class="hljs-built_in">print</span><span>(</span><span class="hljs-string">"The odds of picking"</span><span>,verbs[e],</span><span class="hljs-string">"from the lemmata group is 1 in"</span><span>,odds,</span><span class="hljs-string">"."</span><span>,sep=</span><span class="hljs-string">" "</span><span>)
-</span></span><span></span></code></pre>
+</span><span>results</span></code></pre>
 
-<code><p>The odds of picking εἰμί from the lemmata group is 1 in 9.224367697545278 .</p>
-<p>The odds of picking ὑπάρχω from the lemmata group is 1 in 209.57331104336708 .</p> 
-<p>The odds of picking λωφάω from the lemmata group is 1 in 41178.230769230766 .</p>
-<p> The odds of picking διάπλομαι from the lemmata group is 1 in 2141319.0 .
-</p></code>
-
-<p>The odds of picking λωφάω are about 200 times less than picking ὑπάρχω, and since 1 in ~40,000 is less than 1 in 10,000, which can also be thought of as the desired outcome representing .01% of a set, one could state that the occurrence of λωφάω is in fact uncommon enough to be rare. Now that we have established that λωφάω is rather rare, let us look at the second piece of this claim.</p>
-
-<h2 id="id-2-sicknesses-and-grave-misfortunes" class="relative group"><span class="heading-text">2) Sicknesses and Grave Misfortunes</span></h2>
-
-<p>First, we will look up where λωφάω occurs in Thucydides’ works using our bespoke query engine (under development).</p>
-
-<!-- ehehhehe -->
-<pre class="block overflow-auto p-3 myst-code-body hljs"><code class="language-python" style="white-space:pre"><span><span class="hljs-keyword">from</span><span> simple_query </span><span class="hljs-keyword">import</span><span> create_engine_from_files, word_search
-</span></span><span>
-</span><span><span>query_engine = create_engine_from_files(urns=[</span><span class="hljs-string">'0003-001'</span><span>, </span><span class="hljs-string">'0003-002'</span><span>])
-</span></span><span><span>results = word_search(query_engine, </span><span class="hljs-string">"λωφάω"</span><span>)
-</span></span><span>results</span></code></pre>
-
-<pre class="myst-jp-stream-output text-sm font-thin font-system" style="background-color: unset;"><code><span>URNs in system:  2
-loading  2  items...
-6055
-λωφάω
-</span></code></pre>
-
-<div class="lm-Widget jp-RenderedHTMLCommon jp-RenderedHTML jp-mod-trusted jp-OutputArea-output" data-mime-type="text/html"><div>
+<div class="lm-Widget lm-Panel jp-OutputArea-child jp-OutputArea-executeResult"><div class="lm-Widget jp-OutputPrompt jp-OutputArea-prompt">[3]:</div><div class="lm-Widget jp-RenderedHTMLCommon jp-RenderedHTML jp-mod-trusted jp-OutputArea-output" data-mime-type="text/html"><div>
 <style scoped="">
     .dataframe tbody tr th:only-of-type {
         vertical-align: middle;
@@ -237,7 +51,7 @@ loading  2  items...
         text-align: right;
     }
 </style>
-<table border="1" class="dataframe" style="font-size: small;">
+<table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -258,107 +72,579 @@ loading  2  items...
   <tbody>
     <tr>
       <th>0</th>
-      <td>λωφήσαντα</td>
-      <td>λωφάω</td>
-      <td>verb</td>
+      <td>ἔπος</td>
+      <td>ἔπος</td>
+      <td>noun</td>
       <td>accusative</td>
       <td>singular</td>
-      <td>aorist</td>
-      <td></td>
-      <td>active</td>
-      <td>ATR</td>
-      <td>1281</td>
-      <td>7271687</td>
-      <td>0003-001</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>OBJ</td>
+      <td>359</td>
+      <td>646334</td>
+      <td>0001-001</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>λώφησιν</td>
-      <td>λωφάω</td>
+      <td>ηὔδα</td>
+      <td>αὐδάω</td>
       <td>verb</td>
-      <td></td>
+      <td>NaN</td>
       <td>singular</td>
-      <td>present</td>
+      <td>imperfect</td>
       <td>indicative</td>
       <td>active</td>
       <td>CO</td>
-      <td>3038</td>
-      <td>7318243</td>
-      <td>0003-001</td>
+      <td>359</td>
+      <td>646335</td>
+      <td>0001-001</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>λελωφήκαμεν</td>
-      <td>λωφάω</td>
-      <td>verb</td>
-      <td></td>
-      <td>plural</td>
-      <td>perfect</td>
-      <td>indicative</td>
-      <td>active</td>
+      <td>ἔπος</td>
+      <td>ἔπος</td>
+      <td>noun</td>
+      <td>accusative</td>
+      <td>singular</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
       <td>OBJ</td>
-      <td>4150</td>
-      <td>7348288</td>
-      <td>0003-001</td>
+      <td>2082</td>
+      <td>670163</td>
+      <td>0001-001</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>λωφήσειαν</td>
-      <td>λωφάω</td>
+      <td>ηὔδα</td>
+      <td>αὐδάω</td>
       <td>verb</td>
-      <td></td>
-      <td>plural</td>
-      <td>aorist</td>
-      <td>optative</td>
+      <td>NaN</td>
+      <td>singular</td>
+      <td>imperfect</td>
+      <td>indicative</td>
+      <td>active</td>
+      <td>CO</td>
+      <td>2082</td>
+      <td>670164</td>
+      <td>0001-001</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>ἔπος</td>
+      <td>ἔπος</td>
+      <td>noun</td>
+      <td>accusative</td>
+      <td>singular</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>OBJ</td>
+      <td>1843</td>
+      <td>9229674</td>
+      <td>0012-001</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>ηὔδα</td>
+      <td>αὐδάω</td>
+      <td>verb</td>
+      <td>NaN</td>
+      <td>singular</td>
+      <td>imperfect</td>
+      <td>indicative</td>
+      <td>active</td>
+      <td>CO</td>
+      <td>1843</td>
+      <td>9229675</td>
+      <td>0012-001</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>ἔπος</td>
+      <td>ἔπος</td>
+      <td>noun</td>
+      <td>accusative</td>
+      <td>singular</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>OBJ</td>
+      <td>3233</td>
+      <td>9250969</td>
+      <td>0012-001</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>ηὔδα</td>
+      <td>αὐδάω</td>
+      <td>verb</td>
+      <td>NaN</td>
+      <td>singular</td>
+      <td>imperfect</td>
+      <td>indicative</td>
       <td>active</td>
       <td>PRED</td>
-      <td>5273</td>
-      <td>7382417</td>
-      <td>0003-001</td>
+      <td>3233</td>
+      <td>9250970</td>
+      <td>0012-001</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>ἔπος</td>
+      <td>ἔπος</td>
+      <td>noun</td>
+      <td>accusative</td>
+      <td>singular</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>OBJ</td>
+      <td>3284</td>
+      <td>9251658</td>
+      <td>0012-001</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>ηὔδα</td>
+      <td>αὐδάω</td>
+      <td>verb</td>
+      <td>NaN</td>
+      <td>singular</td>
+      <td>imperfect</td>
+      <td>indicative</td>
+      <td>active</td>
+      <td>CO</td>
+      <td>3284</td>
+      <td>9251659</td>
+      <td>0012-001</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>ἔπος</td>
+      <td>ἔπος</td>
+      <td>noun</td>
+      <td>accusative</td>
+      <td>singular</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>OBJ</td>
+      <td>3544</td>
+      <td>9255650</td>
+      <td>0012-001</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>ηὔδα</td>
+      <td>αὐδάω</td>
+      <td>verb</td>
+      <td>NaN</td>
+      <td>singular</td>
+      <td>imperfect</td>
+      <td>indicative</td>
+      <td>active</td>
+      <td>CO</td>
+      <td>3544</td>
+      <td>9255651</td>
+      <td>0012-001</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>ἔπος</td>
+      <td>ἔπος</td>
+      <td>noun</td>
+      <td>accusative</td>
+      <td>singular</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>OBJ</td>
+      <td>3868</td>
+      <td>9260756</td>
+      <td>0012-001</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>ηὔδα</td>
+      <td>αὐδάω</td>
+      <td>verb</td>
+      <td>NaN</td>
+      <td>singular</td>
+      <td>imperfect</td>
+      <td>indicative</td>
+      <td>active</td>
+      <td>CO</td>
+      <td>3868</td>
+      <td>9260757</td>
+      <td>0012-001</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>ἔπος</td>
+      <td>ἔπος</td>
+      <td>noun</td>
+      <td>accusative</td>
+      <td>singular</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>OBJ</td>
+      <td>4346</td>
+      <td>9268254</td>
+      <td>0012-001</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>ηὔδα</td>
+      <td>αὐδάω</td>
+      <td>verb</td>
+      <td>NaN</td>
+      <td>singular</td>
+      <td>imperfect</td>
+      <td>indicative</td>
+      <td>active</td>
+      <td>CO</td>
+      <td>4346</td>
+      <td>9268255</td>
+      <td>0012-001</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>ἔπος</td>
+      <td>ἔπος</td>
+      <td>noun</td>
+      <td>accusative</td>
+      <td>singular</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>OBJ</td>
+      <td>4727</td>
+      <td>9274100</td>
+      <td>0012-001</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>ηὔδα</td>
+      <td>αὐδάω</td>
+      <td>verb</td>
+      <td>NaN</td>
+      <td>singular</td>
+      <td>imperfect</td>
+      <td>indicative</td>
+      <td>active</td>
+      <td>CO</td>
+      <td>4727</td>
+      <td>9274101</td>
+      <td>0012-001</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>ἔπος</td>
+      <td>ἔπος</td>
+      <td>noun</td>
+      <td>accusative</td>
+      <td>singular</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>OBJ</td>
+      <td>4789</td>
+      <td>9275221</td>
+      <td>0012-001</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>ηὔδα</td>
+      <td>αὐδάω</td>
+      <td>verb</td>
+      <td>NaN</td>
+      <td>singular</td>
+      <td>imperfect</td>
+      <td>indicative</td>
+      <td>active</td>
+      <td>CO</td>
+      <td>4789</td>
+      <td>9275222</td>
+      <td>0012-001</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>ἔπος</td>
+      <td>ἔπος</td>
+      <td>noun</td>
+      <td>accusative</td>
+      <td>singular</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>OBJ</td>
+      <td>4929</td>
+      <td>9277530</td>
+      <td>0012-001</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>ηὔδα</td>
+      <td>αὐδάω</td>
+      <td>verb</td>
+      <td>NaN</td>
+      <td>singular</td>
+      <td>imperfect</td>
+      <td>indicative</td>
+      <td>active</td>
+      <td>CO</td>
+      <td>4929</td>
+      <td>9277531</td>
+      <td>0012-001</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td>ἔπος</td>
+      <td>ἔπος</td>
+      <td>noun</td>
+      <td>accusative</td>
+      <td>singular</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>OBJ</td>
+      <td>5641</td>
+      <td>9288354</td>
+      <td>0012-001</td>
+    </tr>
+    <tr>
+      <th>23</th>
+      <td>ηὔδα</td>
+      <td>αὐδάω</td>
+      <td>verb</td>
+      <td>NaN</td>
+      <td>singular</td>
+      <td>imperfect</td>
+      <td>indicative</td>
+      <td>active</td>
+      <td>CO</td>
+      <td>5641</td>
+      <td>9288355</td>
+      <td>0012-001</td>
+    </tr>
+    <tr>
+      <th>24</th>
+      <td>ἔπος</td>
+      <td>ἔπος</td>
+      <td>noun</td>
+      <td>accusative</td>
+      <td>singular</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>OBJ</td>
+      <td>5854</td>
+      <td>9291696</td>
+      <td>0012-001</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>ηὔδα</td>
+      <td>αὐδάω</td>
+      <td>verb</td>
+      <td>NaN</td>
+      <td>singular</td>
+      <td>imperfect</td>
+      <td>indicative</td>
+      <td>active</td>
+      <td>CO</td>
+      <td>5854</td>
+      <td>9291697</td>
+      <td>0012-001</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td>ἔπος</td>
+      <td>ἔπος</td>
+      <td>noun</td>
+      <td>accusative</td>
+      <td>singular</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>OBJ</td>
+      <td>6776</td>
+      <td>9305501</td>
+      <td>0012-001</td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>ηὔδα</td>
+      <td>αὐδάω</td>
+      <td>verb</td>
+      <td>NaN</td>
+      <td>singular</td>
+      <td>imperfect</td>
+      <td>indicative</td>
+      <td>active</td>
+      <td>CO</td>
+      <td>6776</td>
+      <td>9305502</td>
+      <td>0012-001</td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>ἔπος</td>
+      <td>ἔπος</td>
+      <td>noun</td>
+      <td>accusative</td>
+      <td>singular</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>OBJ</td>
+      <td>6926</td>
+      <td>9307728</td>
+      <td>0012-001</td>
+    </tr>
+    <tr>
+      <th>29</th>
+      <td>ηὔδα</td>
+      <td>αὐδάω</td>
+      <td>verb</td>
+      <td>NaN</td>
+      <td>singular</td>
+      <td>imperfect</td>
+      <td>indicative</td>
+      <td>active</td>
+      <td>CO</td>
+      <td>6926</td>
+      <td>9307729</td>
+      <td>0012-001</td>
+    </tr>
+    <tr>
+      <th>30</th>
+      <td>ἔπος</td>
+      <td>ἔπος</td>
+      <td>noun</td>
+      <td>accusative</td>
+      <td>singular</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>OBJ</td>
+      <td>8151</td>
+      <td>9325612</td>
+      <td>0012-001</td>
+    </tr>
+    <tr>
+      <th>31</th>
+      <td>ηὔδα</td>
+      <td>αὐδάω</td>
+      <td>verb</td>
+      <td>NaN</td>
+      <td>singular</td>
+      <td>imperfect</td>
+      <td>indicative</td>
+      <td>active</td>
+      <td>CO</td>
+      <td>8151</td>
+      <td>9325613</td>
+      <td>0012-001</td>
+    </tr>
+    <tr>
+      <th>32</th>
+      <td>ἔπος</td>
+      <td>ἔπος</td>
+      <td>noun</td>
+      <td>accusative</td>
+      <td>singular</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>OBJ</td>
+      <td>3473</td>
+      <td>9384859</td>
+      <td>0012-002</td>
+    </tr>
+    <tr>
+      <th>33</th>
+      <td>ηὔδα</td>
+      <td>αὐδάω</td>
+      <td>verb</td>
+      <td>NaN</td>
+      <td>singular</td>
+      <td>imperfect</td>
+      <td>indicative</td>
+      <td>active</td>
+      <td>CO</td>
+      <td>3473</td>
+      <td>9384860</td>
+      <td>0012-002</td>
+    </tr>
+    <tr>
+      <th>34</th>
+      <td>ἔπος</td>
+      <td>ἔπος</td>
+      <td>noun</td>
+      <td>accusative</td>
+      <td>singular</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>OBJ</td>
+      <td>207</td>
+      <td>409443</td>
+      <td>0013-004</td>
+    </tr>
+    <tr>
+      <th>35</th>
+      <td>ηὔδα</td>
+      <td>αὐδάω</td>
+      <td>verb</td>
+      <td>NaN</td>
+      <td>singular</td>
+      <td>imperfect</td>
+      <td>indicative</td>
+      <td>active</td>
+      <td>PRED</td>
+      <td>207</td>
+      <td>409444</td>
+      <td>0013-004</td>
+    </tr>
+    <tr>
+      <th>36</th>
+      <td>ἔπος</td>
+      <td>ἔπος</td>
+      <td>noun</td>
+      <td>accusative</td>
+      <td>singular</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>OBJ</td>
+      <td>60</td>
+      <td>15469871</td>
+      <td>1252-002</td>
+    </tr>
+    <tr>
+      <th>37</th>
+      <td>ηὔδα</td>
+      <td>αὐδάω</td>
+      <td>verb</td>
+      <td>NaN</td>
+      <td>singular</td>
+      <td>imperfect</td>
+      <td>indicative</td>
+      <td>active</td>
+      <td>CO</td>
+      <td>60</td>
+      <td>15469872</td>
+      <td>1252-002</td>
     </tr>
   </tbody>
 </table>
-</div></div>
+</div></div></div>
 
-<p>As you can see, there are four instances in the History, which we will look at one by one. We can open up the History’s <a target="_blank" rel="noreferrer" href="https://github.com/lepidopterane-atsmith/tompkinsia/raw/refs/heads/main/comment_01/data/xml/0003-001.xml" class="link">treebank file</a> and use cmd/ctrl + F to search for <code>sentence id=</code><strong>“Sentence ID in the table above”</strong> and match those to subdoc notes and the first four words, as seen in the following subsections. This makes sure we are looking at the right instance, and you can do something similar with the Word ID.</p>
-
-<p>For each of these four instances, we will take a closer look and assess whether each instance supports or invalidates this assumption. Each passage is accompanied by translations from Charles Foster’s early 1900s editions.</p>
-
-<h3 id="instance-1-2-49-4" class="relative group"><span class="heading-text">Instance 1: 2.49.4, Sentence ID 1281, λύγξ τε τοῖς πλέοσιν</span></h3>
-
-<blockquote><p>λύγξ τε τοῖς πλέοσιν ἐνέπιπτε κενή, σπασμὸν ἐνδιδοῦσα ἰσχυρόν, τοῖς μὲν μετὰ ταῦτα λωφήσαντα, τοῖς δὲ καὶ πολλῷ ὕστερον.</p></blockquote>
-
-<blockquote><p>...and in most cases ineffectual retching followed producing violent convulsions, which sometimes abated directly, sometimes not until long afterwards.</p></blockquote>
-
-<p>This passage documents symptoms of the Athenian Plague, which was happening at the same time as the Peloponessian War. λωφήσαντα is certainly used in the context of a sickness.</p>
-
-<h3 id="instance-2-4-81-2" class="relative group"><span class="heading-text">Instance 2: 4.81.2, Sentence ID 3038, τό τε γὰρ παραυτίκα</span></h3>
-
-<blockquote><p>τό τε γὰρ παραυτίκα ἑαυτὸν παρασχὼν δίκαιον καὶ μέτριον ἐς τὰς πόλεις ἀπέστησε τὰ πολλά, τὰ δὲ προδοσίᾳ εἷλε τῶν χωρίων, ὥστε τοῖς Λακεδαιμονίοις γίγνεσθαι ξυμβαίνειν τε βουλομένοις, ὅπερ ἐποίησαν, ἀνταπόδοσιν καὶ ἀποδοχὴν χωρίων καὶ τοῦ πολέμου ἀπὸ τῆς Πελοποννήσου λώφησιν· ἔς τε τὸν χρόνῳ ὕστερον μετὰ τὰ ἐκ Σικελίας πόλεμον ἡ τότε Βρασίδου ἀρετὴ καὶ ξύνεσις, τῶν μὲν πείρᾳ αἰσθομένων, τῶν δὲ ἀκοῇ νομισάντων, μάλιστα ἐπιθυμίαν ἐνεποίει τοῖς Ἀθηναίων ξυμμάχοις ἐς τοὺς Λακεδαιμονίους.</p></blockquote>
-
-<blockquote><p>For, at the present crisis, by showing himself just and moderate in his dealings with the cities he caused most of the places to revolt, and secured possession of others by the treachery of their inhabitants, so that when the Lacedaemonians wished to make terms with Athens, as they did ultimately, they had places to offer in exchange for places they wished to recover and were able to secure for the Peloponnesus a respite from the war; and in the later part of the war, after the events in Sicily, it was the virtue and tact which Brasidas had displayed at this time—qualities of which some had had experience, while others knew of them by report—that did most to inspire in the allies of the Athenians a sentiment favourable to the Lacedaemonians.</p></blockquote>
-
-<p>Foster translates λώφησιν as respite, as it is actually from the noun λώφησις and not the verb λωφάω. Technically, this does not count as an instance of λωφάω and will not be assessed, though it should be known that this word was mislabeled as a form of λωφάω in the treebanks being searched over for this part of the analysis.</p>
-
-<h3 id="instance-3-6-12-1" class="relative group"><span class="heading-text">Instance 3: 6.12.1, Sentence ID 4150, ‘καὶ μεμνῆσθαι χρὴ ἡμᾶς</span></h3>
-
-<blockquote><p>‘καὶ μεμνῆσθαι χρὴ ἡμᾶς ὅτι νεωστὶ ἀπὸ νόσου μεγάλης καὶ πολέμου βραχύ τι λελωφήκαμεν, ὥστε καὶ χρήμασι καὶ τοῖς σώμασιν ηὐξῆσθαι·</p></blockquote>
-
-<blockquote><p>And we should remember that we have but lately recovered somewhat from a great pestilence and war, so as to recruit our strength both in money and in men;</p></blockquote>
-
-<p>Nicias is purposely invoking the Athenian recovery from the Athenian Plague, using the λελωφήκαμεν this comment and its claim are anchored on, in the context of a sickness.</p>
-
-<h3 id="instance-4-7-77-3" class="relative group"><span class="heading-text">Instance 4: 7.77.3, Sentence ID 5273, τάχα δὲ ἂν καὶ</span></h3>
-
-<blockquote><p>ἀνθ’ ὧν ἡ μὲν ἐλπὶς ὅμως θρασεῖα τοῦ μέλλοντος, αἱ δὲ ξυμφοραὶ οὐ κατ’ ἀξίαν δὴ φοβοῦσιν. τάχα δὲ ἂν καὶ λωφήσειαν· ἱκανὰ γὰρ τοῖς τε πολεμίοις ηὐτύχηται, καὶ εἴ τῳ θεῶν ἐπίφθονοι ἐστρατεύσαμεν, ἀποχρώντως ἤδη τετιμωρήμεθα.</p></blockquote>
-
-<blockquote><p>Wherefore, in spite of all, my hope for the future is still confident, and our calamities do not frighten me as much as they might well have done. Perhaps they may even abate; for our enemies have had good fortune enough, and if we have roused the jealousy of any of the gods by our expedition we have already been punished sufficiently.</p></blockquote>
-
-<p>Nicias is using what he knows of rhetoric and past Athenian might to reinvigorate Athenian forces that have recently experienced a great loss. His language is somewhat ambiguous as he documents times when in the face of some calamity Athenians find a way forward nonetheless, but this seems more entrenched in the “grave misfortunes” part of the claim than the “sicknesses” part.</p>
-
-<p>Smith says that Thucydides usually uses this in the context of grave misfortunes and sicknesses, leading the uncritical reader to assume that he uses this lemma more than three times, and that there may be some instances that occur not in the context of sickness but in the former context, along with a handful of instances that do not mention sickness or misfortune. The analysis in this notebook shows that Thucydides uses this word thrice, always in the context of the Athenian Plague, except for when Nicias is discussing grave misfortunes past and present in 7.77.3, and there is no direct mention of the plague. While this could validate Smith’s comment, it would be remiss not to remark that the wording of the claim misleads the author to believe that this is a more frequent and less specific pattern than it is. Combined with earlier confirmation that λωφάω is in fact rare, we find here that these claims hold up, even if the wording on one is somewhat misleading.</p>
-      
-      </div>
+<p>This is big enough to be a pattern, but small enough to spot check. Using the treebanks, we looked up each result and evaluated 1) whether these words were at the end of a line, and 2) whether the phrase was preceded by a participle. (Have you ever noticed how you can visit a website like this one or this one and replace 0012-001 with any other Document URN? This is one tip that can help you look these over for yourself.) Anyway, while walking through 12 examples would be tedious, it is important to note that while we did find all our instances at the end of a line, the first two instances on this list had no accompanying participle, so it might be better to say that ἔπος ηὔδα is usually rather than always with a preceding participle.</p>
 
     </body>
     </html>
