@@ -11,200 +11,719 @@
 <div id="notebook" style="padding: 5px"> <h1>σὺ δέ</h1>
         <p>The verbatim claim: “σὺ δ(έ): occurs predominantly in Homer and Herodotus,”</p>
         <p>Our interpretation: If we searched for these two words next to each other, averaging authors' use of the phenomenon across all their works, Homer and Herodotus would be in the lead.</p>
-        <h2>0) Requirements</h2>
+        <h2>Requirements</h2>
         <p>To run and tweak this analysis, you will need the following:</p>
-        <ul><li><p>this notebook</p></li><li><p>all_verb_lemmata.csv (counts of every verb’s lemma in the Perseus corpus)</p></li>
+        <ul><li><p>this notebook, with its home directory</p></li>
           <li><p>the <a target="_blank" rel="noreferrer" href="https://pandas.pydata.org/docs/getting_started/index.html#installation" class="link">pandas</a> library</p></li></ul>
 
-        <h2>1) Rarity</h2>
-        <p>First, let’s import some necessary libraries and look .</p>
+        <h2>Averages</h2>
+        <p>First, let’s import some necessary libraries. This second one is our bespoke query library for the Greek lit corpus.</p> 
+        
+        <pre class="block overflow-auto p-3 myst-code-body hljs" ><code class="language-python" ><span><span class="hljs-keyword">import</span><span> pandas </span><span class="hljs-keyword">as</span><span> pd
+</span></span><span><span></span><span class="hljs-keyword">from</span><span> simple_query </span><span class="hljs-keyword">import</span><span> create_engine_from_files, word_search, all_urns</span></span></code></pre>
 
-        <pre class="block overflow-auto p-3 myst-code-body hljs" style="background-color:#FFFF88"><code class="language-python" style="white-space:pre"><span><span class="hljs-keyword">import</span><span> pandas </span><span class="hljs-keyword">as</span><span> pd
+<p>For this objective, let’s search our Greek lit corpus for instances of σὺ δ(έ).</p>
+
+<pre style="padding:5;margin:0;"><code class="language-python" style="white-space:pre"><span><span>results = pd.DataFrame({</span><span class="hljs-string">'Form'</span><span>: pd.Series([]), </span><span class="hljs-string">'Lemma'</span><span>: pd.Series([]), </span><span class="hljs-string">'Part of Speech'</span><span>: pd.Series([]),</span><span class="hljs-string">'Case'</span><span>: pd.Series([]), </span><span class="hljs-string">'Number'</span><span>: pd.Series([]), </span><span class="hljs-string">'Tense'</span><span>: pd.Series([]),
+</span></span><span><span>                        </span><span class="hljs-string">'Mood'</span><span>: pd.Series([]), </span><span class="hljs-string">'Voice'</span><span>: pd.Series([]), </span><span class="hljs-string">'Relation'</span><span>: pd.Series([]), </span><span class="hljs-string">'Sentence ID'</span><span>: pd.Series([]), </span><span class="hljs-string">'Word ID'</span><span>: pd.Series([]), 
+</span></span><span><span>                        </span><span class="hljs-string">'Document URN'</span><span>: pd.Series([])})
 </span></span><span>
-</span><span><span>lemmata = pd.read_csv(</span><span class="hljs-string">'../all_verb_lemmata.csv'</span><span>)
-</span></span><span><span>lemmata.sort_values(</span><span class="hljs-string">'count'</span><span>, ascending=</span><span class="hljs-literal">False</span><span>)[:</span><span class="hljs-number">20</span><span>]</span></span></code></pre>
+</span><span><span></span><span class="hljs-keyword">for</span><span> i </span><span class="hljs-keyword">in</span><span> all_urns:
+</span></span><span><span>    </span><span class="hljs-keyword">try</span><span>:
+</span></span><span>        query_engine = create_engine_from_files(urns=[i])
+</span><span><span>        results = pd.concat([results, word_search(query_engine, </span><span class="hljs-string">"[form=σὺ] + δέ"</span><span> )])
+</span></span><span><span>    </span><span class="hljs-keyword">except</span><span>:
+</span></span><span><span>        </span><span class="hljs-built_in">print</span><span>(</span><span class="hljs-string">"oops"</span><span>)
+</span></span><span>
+</span><span>results</span></code></pre>
 
-<div class="lm-Widget jp-OutputPrompt jp-OutputArea-prompt">[28]:</div><div class="lm-Widget jp-RenderedHTMLCommon jp-RenderedHTML jp-mod-trusted jp-OutputArea-output" data-mime-type="text/html"><div>
+<div class="lm-Widget jp-OutputPrompt jp-OutputArea-prompt">[2]:</div><div class="lm-Widget jp-RenderedHTMLCommon jp-RenderedHTML jp-mod-trusted jp-OutputArea-output" data-mime-type="text/html"><div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
-<table border="1" border-collapse="collapse" border-style="single" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>lemma</th>
-      <th>count</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th> 1050 </th>
-      <td> εἰμί </td>
-      <td> 209433 </td>
-    </tr>
-    <tr>
-      <th> 11096 </th>
-      <td> λέγω </td>
-      <td> 78161 </td>
-    </tr>
-    <tr>
-      <th> 45165 </th>
-      <td> γίγνομαι </td>
-      <td> 65809 </td>
-    </tr>
-    <tr>
-      <th> 21008 </th>
-      <td> ἔχω </td>
-      <td> 60845 </td>
-    </tr>
-    <tr>
-      <th> 25204 </th>
-      <td> ποιέω </td>
-      <td> 36583 </td>
-    </tr>
-    <tr>
-      <th> 49363 </th>
-      <td> φημί </td>
-      <td> 35067 </td>
-    </tr>
-    <tr>
-      <th> 49264 </th>
-      <td> δέω </td>
-      <td> 23717 </td>
-    </tr>
-    <tr>
-      <th> 42928 </th>
-      <td> δοκέω </td>
-      <td> 18658 </td>
-    </tr>
-    <tr>
-      <th> 14293 </th>
-      <td> ὁράω </td>
-      <td> 17522 </td>
-    </tr>
-    <tr>
-      <th> 42549 </th>
-      <td> λαμβάνω </td>
-      <td> 16627 </td>
-    </tr>
-    <tr>
-      <th> 45350 </th>
-      <td> καλέω </td>
-      <td> 14470 </td>
-    </tr>
-    <tr>
-      <th> 28383 </th>
-      <td> δίδωμι </td>
-      <td> 13962 </td>
-    </tr>
-    <tr>
-      <th> 50211 </th>
-      <td> δύναμαι </td>
-      <td> 13013 </td>
-    </tr>
-    <tr>
-      <th> 18255 </th>
-      <td> χράω </td>
-      <td> 12790 </td>
-    </tr>
-    <tr>
-      <th> 50271 </th>
-      <td> βούλομαι </td>
-      <td> 12462 </td>
-    </tr>
-    <tr>
-      <th> 16735 </th>
-      <td> οἶδα </td>
-      <td> 12020 </td>
-    </tr>
-    <tr>
-      <th> 13209 </th>
-      <td> ἔρχομαι </td>
-      <td> 11611 </td>
-    </tr>
-    <tr>
-      <th> 20480 </th>
-      <td> φαίνω </td>
-      <td> 11441 </td>
-    </tr>
-    <tr>
-      <th> 12879 </th>
-      <td> φέρω </td>
-      <td> 10231 </td>
-    </tr>
-    <tr>
-      <th> 42300 </th>
-      <td> ὑπάρχω </td>
-      <td> 10169 </td>
-    </tr>
-  </tbody>
-</table>
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
 
-<p>These are the 20 most common lemmata in our lemma group. To evaluate how unlikely it is to pick λωφάω from this group, we should have other odds to compare it against. Calculating the same odds for the most common lemma (εἰμί), the 20th most common lemma (ὑπάρχω), and maybe one least common lemma should be a good set to help us see how rare or not rare λωφάω is. Let’s pick the least common lemma:</p>
-
-<pre class="block overflow-auto p-3 myst-code-body hljs" ><code class="language-python" style="white-space:pre"><span><span>lemmata.sort_values(</span><span class="hljs-string">'count'</span><span>, ascending=</span><span class="hljs-literal">False</span><span>)[-</span><span class="hljs-number">5</span><span>:]</span></span></code></pre>
-
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>lemma</th>
-      <th>count</th>
+      <th>Form</th>
+      <th>Lemma</th>
+      <th>Part of Speech</th>
+      <th>Case</th>
+      <th>Number</th>
+      <th>Tense</th>
+      <th>Mood</th>
+      <th>Voice</th>
+      <th>Relation</th>
+      <th>Sentence ID</th>
+      <th>Word ID</th>
+      <th>Document URN</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <th>50471</th>
-      <td>διατμάζω</td>
-      <td>1</td>
+      <th>0</th>
+      <td>σὺ</td>
+      <td>σύ</td>
+      <td>pronoun</td>
+      <td>nominative</td>
+      <td>singular</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>SBJ</td>
+      <td>252</td>
+      <td>644658</td>
+      <td>0001-001</td>
     </tr>
     <tr>
-      <th>50470</th>
-      <td>ὑποπέτομαι</td>
-      <td>1</td>
+      <th>1</th>
+      <td>δ’</td>
+      <td>δέ</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>AuxY</td>
+      <td>252</td>
+      <td>644659</td>
+      <td>0001-001</td>
     </tr>
     <tr>
-      <th>50469</th>
-      <td>ἀνταναμένω</td>
-      <td>1</td>
+      <th>2</th>
+      <td>σὺ</td>
+      <td>σύ</td>
+      <td>pronoun</td>
+      <td>nominative</td>
+      <td>singular</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>SBJ</td>
+      <td>470</td>
+      <td>647957</td>
+      <td>0001-001</td>
     </tr>
     <tr>
-      <th>50467</th>
-      <td>ἀπκαλύπτω</td>
-      <td>1</td>
+      <th>3</th>
+      <td>δ’</td>
+      <td>δέ</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>AuxY</td>
+      <td>470</td>
+      <td>647958</td>
+      <td>0001-001</td>
     </tr>
     <tr>
-      <th>50464</th>
-      <td>διάπλομαι</td>
-      <td>1</td>
+      <th>4</th>
+      <td>σὺ</td>
+      <td>σύ</td>
+      <td>pronoun</td>
+      <td>nominative</td>
+      <td>singular</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>SBJ</td>
+      <td>1066</td>
+      <td>656378</td>
+      <td>0001-001</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>δὲ</td>
+      <td>δέ</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>AuxY</td>
+      <td>122</td>
+      <td>20160003</td>
+      <td>2042-007</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>σὺ</td>
+      <td>σύ</td>
+      <td>pronoun</td>
+      <td>nominative</td>
+      <td>singular</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>SBJ</td>
+      <td>195</td>
+      <td>20161348</td>
+      <td>2042-007</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>δὲ</td>
+      <td>δέ</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>AuxY</td>
+      <td>195</td>
+      <td>20161349</td>
+      <td>2042-007</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>σὺ</td>
+      <td>σύ</td>
+      <td>pronoun</td>
+      <td>nominative</td>
+      <td>singular</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>SBJ</td>
+      <td>600</td>
+      <td>20185624</td>
+      <td>2042-008</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>δὲ</td>
+      <td>δέ</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>AuxY</td>
+      <td>600</td>
+      <td>20185625</td>
+      <td>2042-008</td>
     </tr>
   </tbody>
 </table>
+<p>3224 rows × 12 columns</p>
+</div></div>
 
-<div id="RtdJ0t5DLA" class="myst-jp-nb-block relative group/block"><p>διάπλομαι will do nicely, a single instance in a large set of lemmata is definitely rare.</p><p>Odds are calculated the following way: <strong>undesirable outcomes / desirable outcomes = x</strong> where we then say there is a 1 in x chance of the desirable outcome. In our case, let’s say that desirable outcomes are the counts associated with each lemma, and the undesirable outcomes can be calculated by subtracting each desirable outcome from the sum of everything in the <strong>count</strong> column.</p></div>
+<p>Wow! That’s a lot of results. Let’s do some data wrangling to get a feel for how many of these results each author here is responsible for. Document URNs are individual identifiers for documents in the Greek lit corpus. The first four numbers correspond with an author, and the last four numbers correspond with a specific work. URNs will help us count these by author.</p>
+
+<pre style="padding:5;margin:0;"><code class="language-python" style="white-space:pre"><span><span>results[</span><span class="hljs-string">'author'</span><span>] = results[</span><span class="hljs-string">'Document URN'</span><span>].</span><span class="hljs-built_in">str</span><span>.partition(</span><span class="hljs-string">"-"</span><span>)[</span><span class="hljs-number">0</span><span>]
+</span></span><span><span>real_results = results[results[</span><span class="hljs-string">'Lemma'</span><span>] == </span><span class="hljs-string">'δέ'</span><span>]
+</span></span><span>
+</span><span><span>authors = results[</span><span class="hljs-string">'author'</span><span>].unique()
+</span></span><span>hits = []
+</span><span>
+</span><span><span></span><span class="hljs-keyword">for</span><span> a </span><span class="hljs-keyword">in</span><span> authors:
+</span></span><span><span>    hit = </span><span class="hljs-built_in">len</span><span>(real_results[real_results[</span><span class="hljs-string">'author'</span><span>] == a])
+</span></span><span>    hits.append(hit)
+</span><span>
+</span><span>author_series = pd.Series(authors)
+</span><span>hits_series = pd.Series(hits)
+</span><span><span>author_data = pd.DataFrame({</span><span class="hljs-string">'author'</span><span> : author_series, </span><span class="hljs-string">'instances'</span><span> : hits_series})
+</span></span><span>
+</span><span>author_data</span></code></pre>
+
+<div class="lm-Widget lm-Panel jp-OutputArea-child jp-OutputArea-executeResult"><div class="lm-Widget jp-OutputPrompt jp-OutputArea-prompt">[12]:</div><div class="lm-Widget jp-RenderedHTMLCommon jp-RenderedHTML jp-mod-trusted jp-OutputArea-output" data-mime-type="text/html"><div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>author</th>
+      <th>instances</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0001</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0003</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0005</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0006</td>
+      <td>105</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0007</td>
+      <td>22</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>71</th>
+      <td>1632</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>72</th>
+      <td>1715</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>73</th>
+      <td>1765</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <th>74</th>
+      <td>1766</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>75</th>
+      <td>2042</td>
+      <td>23</td>
+    </tr>
+  </tbody>
+</table>
+<p>76 rows × 2 columns</p>
+</div></div></div>
+
+<div id="RtdJ0t5DLA" class="myst-jp-nb-block relative group/block"><p>That’s more like it. Let’s see if we can use that list of unique authors to get a list of every URN they’re responsible for.</p></div>
 
 <!-- this is. stretching the box. why. stop doing that  -->
-<pre ><code class="language-python" style="white-space:pre"><span><span>total_count = </span><span class="hljs-built_in">int</span><span>(lemmata[</span><span class="hljs-string">'count'</span><span>].</span><span class="hljs-built_in">sum</span><span>())
-</span></span><span>desirable_outcomes, undesirable_outcomes = [],[]
-</span><span><span>verbs = [</span><span class="hljs-string">"εἰμί"</span><span>, </span><span class="hljs-string">"ὑπάρχω"</span><span>, </span><span class="hljs-string">"λωφάω"</span><span>, </span><span class="hljs-string">"διάπλομαι"</span><span>]
+<pre ><code class="language-python" style="white-space:pre"><span><span>author_urns = []
 </span></span><span>
-</span><span><span></span><span class="hljs-keyword">for</span><span> i </span><span class="hljs-keyword">in</span><span> verbs:
-</span></span><span><span>    desirable_outcomes.extend(lemmata[lemmata[</span><span class="hljs-string">'lemma'</span><span>]== i][</span><span class="hljs-string">'count'</span><span>].values)
-</span></span><span><span>desirable_outcomes = [</span><span class="hljs-built_in">int</span><span>(i) </span><span class="hljs-keyword">for</span><span> i </span><span class="hljs-keyword">in</span><span> desirable_outcomes]
+</span><span><span></span><span class="hljs-keyword">for</span><span> u </span><span class="hljs-keyword">in</span><span> all_urns:
+</span></span><span><span>    </span><span class="hljs-keyword">for</span><span> a </span><span class="hljs-keyword">in</span><span> authors:
+</span></span><span><span>        </span><span class="hljs-keyword">if</span><span> a </span><span class="hljs-keyword">in</span><span> u:
+</span></span><span>            author_urns.append(u)
+</span><span></span></code></pre>
+
+<p>We want to see what percent of each author’s works use our phrase, so we will borrow some code from another notebook to get token and punctuation counts to help us get a word count for our goal.</p>
+
+<pre><code class="language-python" style="white-space:pre"><span><span>word_results = pd.DataFrame({</span><span class="hljs-string">'Form'</span><span>: pd.Series([]), </span><span class="hljs-string">'Lemma'</span><span>: pd.Series([]), </span><span class="hljs-string">'Part of Speech'</span><span>: pd.Series([]),</span><span class="hljs-string">'Case'</span><span>: pd.Series([]), </span><span class="hljs-string">'Number'</span><span>: pd.Series([]), </span><span class="hljs-string">'Tense'</span><span>: pd.Series([]),
+</span></span><span><span>                        </span><span class="hljs-string">'Mood'</span><span>: pd.Series([]), </span><span class="hljs-string">'Voice'</span><span>: pd.Series([]), </span><span class="hljs-string">'Relation'</span><span>: pd.Series([]), </span><span class="hljs-string">'Sentence ID'</span><span>: pd.Series([]), </span><span class="hljs-string">'Word ID'</span><span>: pd.Series([]), 
+</span></span><span><span>                        </span><span class="hljs-string">'Document URN'</span><span>: pd.Series([])})
 </span></span><span>
-</span><span><span></span><span class="hljs-keyword">for</span><span> d </span><span class="hljs-keyword">in</span><span> desirable_outcomes:
-</span></span><span>    undesirable_outcomes.append(total_count-d)
+</span><span>all_words = []
 </span><span>
-</span><span><span></span><span class="hljs-keyword">for</span><span> e </span><span class="hljs-keyword">in</span><span> </span><span class="hljs-built_in">range</span><span>(</span><span class="hljs-number">4</span><span>):
-</span></span><span>    odds = undesirable_outcomes[e]/desirable_outcomes[e]
-</span><span><span>    </span><span class="hljs-built_in">print</span><span>(</span><span class="hljs-string">"The odds of picking"</span><span>,verbs[e],</span><span class="hljs-string">"from the lemmata group is 1 in"</span><span>,odds,</span><span class="hljs-string">"."</span><span>,sep=</span><span class="hljs-string">" "</span><span>)
-</span></span><span></span></code></pre>
+</span><span><span></span><span class="hljs-keyword">for</span><span> i </span><span class="hljs-keyword">in</span><span> author_urns:
+</span></span><span>    query_engine = create_engine_from_files(urns=[i])
+</span><span><span>    punct, tokens = </span><span class="hljs-built_in">len</span><span>(word_search(query_engine, </span><span class="hljs-string">":punctuation"</span><span> )) , </span><span class="hljs-built_in">len</span><span>(word_search(query_engine, </span><span class="hljs-string">":neighbor"</span><span> )) 
+</span></span><span><span>    </span><span class="hljs-comment"># second statement grabs all tokens including punctuation</span><span>
+</span></span><span>    result = tokens - punct
+</span><span>    all_words.append(result)</span></code></pre>
 
-<code><p>The odds of picking εἰμί from the lemmata group is 1 in 9.224367697545278 .</p>
-<p>The odds of picking ὑπάρχω from the lemmata group is 1 in 209.57331104336708 .</p> 
-<p>The odds of picking λωφάω from the lemmata group is 1 in 41178.230769230766 .</p>
-<p> The odds of picking διάπλομαι from the lemmata group is 1 in 2141319.0 .
-</p></code>
+<p>We can smash this again from URNs to authors, and then it’s time to prepare our results.</p>
 
-<p>The odds of picking λωφάω are about 200 times less than picking ὑπάρχω, and since 1 in ~40,000 is less than 1 in 10,000, which can also be thought of as the desired outcome representing .01% of a set, one could state that the occurrence of λωφάω is in fact uncommon enough to be rare. Now that we have established that λωφάω is rather rare, let us look at the second piece of this claim.</p>
+<pre><code class="language-python" style="white-space:pre"><span><span>word_results = pd.DataFrame({</span><span class="hljs-string">'Form'</span><span>: pd.Series([]), </span><span class="hljs-string">'Lemma'</span><span>: pd.Series([]), </span><span class="hljs-string">'Part of Speech'</span><span>: pd.Series([]),</span><span class="hljs-string">'Case'</span><span>: pd.Series([]), </span><span class="hljs-string">'Number'</span><span>: pd.Series([]), </span><span class="hljs-string">'Tense'</span><span>: pd.Series([]),
+</span></span><span><span>                        </span><span class="hljs-string">'Mood'</span><span>: pd.Series([]), </span><span class="hljs-string">'Voice'</span><span>: pd.Series([]), </span><span class="hljs-string">'Relation'</span><span>: pd.Series([]), </span><span class="hljs-string">'Sentence ID'</span><span>: pd.Series([]), </span><span class="hljs-string">'Word ID'</span><span>: pd.Series([]), 
+</span></span><span><span>                        </span><span class="hljs-string">'Document URN'</span><span>: pd.Series([])})
+</span></span><span>
+</span><span>all_words = []
+</span><span>
+</span><span><span></span><span class="hljs-keyword">for</span><span> i </span><span class="hljs-keyword">in</span><span> author_urns:
+</span></span><span>    query_engine = create_engine_from_files(urns=[i])
+</span><span><span>    punct, tokens = </span><span class="hljs-built_in">len</span><span>(word_search(query_engine, </span><span class="hljs-string">":punctuation"</span><span> )) , </span><span class="hljs-built_in">len</span><span>(word_search(query_engine, </span><span class="hljs-string">":neighbor"</span><span> )) 
+</span></span><span><span>    </span><span class="hljs-comment"># second statement grabs all tokens including punctuation</span><span>
+</span></span><span>    result = tokens - punct
+</span><span>    all_words.append(result)</span></code></pre>
 
+<div class="lm-Widget lm-Panel jp-OutputArea-child jp-OutputArea-executeResult"><div class="lm-Widget jp-OutputPrompt jp-OutputArea-prompt">[20]:</div><div class="lm-Widget jp-RenderedHTMLCommon jp-RenderedHTML jp-mod-trusted jp-OutputArea-output" data-mime-type="text/html"><div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>author</th>
+      <th>instances</th>
+      <th>word count</th>
+      <th>percent saturation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>56</th>
+      <td>0570</td>
+      <td>1</td>
+      <td>29</td>
+      <td>3.448276</td>
+    </tr>
+    <tr>
+      <th>38</th>
+      <td>0239</td>
+      <td>1</td>
+      <td>39</td>
+      <td>2.564103</td>
+    </tr>
+    <tr>
+      <th>36</th>
+      <td>0216</td>
+      <td>1</td>
+      <td>90</td>
+      <td>1.111111</td>
+    </tr>
+    <tr>
+      <th>71</th>
+      <td>1632</td>
+      <td>3</td>
+      <td>724</td>
+      <td>0.414365</td>
+    </tr>
+    <tr>
+      <th>72</th>
+      <td>1715</td>
+      <td>2</td>
+      <td>495</td>
+      <td>0.404040</td>
+    </tr>
+    <tr>
+      <th>57</th>
+      <td>0591</td>
+      <td>5</td>
+      <td>1436</td>
+      <td>0.348189</td>
+    </tr>
+    <tr>
+      <th>37</th>
+      <td>0219</td>
+      <td>1</td>
+      <td>337</td>
+      <td>0.296736</td>
+    </tr>
+    <tr>
+      <th>45</th>
+      <td>0533</td>
+      <td>16</td>
+      <td>11398</td>
+      <td>0.140376</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>0019</td>
+      <td>129</td>
+      <td>96328</td>
+      <td>0.133917</td>
+    </tr>
+    <tr>
+      <th>30</th>
+      <td>0085</td>
+      <td>42</td>
+      <td>40422</td>
+      <td>0.103904</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>0030</td>
+      <td>12</td>
+      <td>11599</td>
+      <td>0.103457</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>0013</td>
+      <td>16</td>
+      <td>15919</td>
+      <td>0.100509</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0006</td>
+      <td>105</td>
+      <td>108199</td>
+      <td>0.097043</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td>0062</td>
+      <td>249</td>
+      <td>282051</td>
+      <td>0.088282</td>
+    </tr>
+    <tr>
+      <th>66</th>
+      <td>1252</td>
+      <td>2</td>
+      <td>2408</td>
+      <td>0.083056</td>
+    </tr>
+    <tr>
+      <th>34</th>
+      <td>0137</td>
+      <td>1</td>
+      <td>1209</td>
+      <td>0.082713</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>0011</td>
+      <td>43</td>
+      <td>62699</td>
+      <td>0.068582</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>0012</td>
+      <td>129</td>
+      <td>200355</td>
+      <td>0.064386</td>
+    </tr>
+    <tr>
+      <th>35</th>
+      <td>0199</td>
+      <td>3</td>
+      <td>4859</td>
+      <td>0.061741</td>
+    </tr>
+    <tr>
+      <th>51</th>
+      <td>0554</td>
+      <td>20</td>
+      <td>34919</td>
+      <td>0.057275</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+
+Because of weird sample size, our frontrunners here are actually 0533 (Callimachus), 0019 (Aristophanes), and 0085 (Aeschylus). However, let’s see what we happens when sorting by most instances.
+
+<pre><code class="language-python" style="white-space:pre"><span><span>author_data.sort_values(</span><span class="hljs-string">'instances'</span><span>, ascending=</span><span class="hljs-literal">False</span><span>)[:</span><span class="hljs-number">20</span><span>]</span></span></code></pre>
+
+<div class="lm-Widget lm-Panel jp-OutputArea-child jp-OutputArea-executeResult"><div class="lm-Widget jp-OutputPrompt jp-OutputArea-prompt">[21]:</div><div class="lm-Widget jp-RenderedHTMLCommon jp-RenderedHTML jp-mod-trusted jp-OutputArea-output" data-mime-type="text/html"><div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>author</th>
+      <th>instances</th>
+      <th>word count</th>
+      <th>percent saturation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>26</th>
+      <td>0062</td>
+      <td>249</td>
+      <td>282051</td>
+      <td>0.088282</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>0059</td>
+      <td>130</td>
+      <td>565748</td>
+      <td>0.022978</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>0012</td>
+      <td>129</td>
+      <td>200355</td>
+      <td>0.064386</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>0019</td>
+      <td>129</td>
+      <td>96328</td>
+      <td>0.133917</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0006</td>
+      <td>105</td>
+      <td>108199</td>
+      <td>0.097043</td>
+    </tr>
+    <tr>
+      <th>39</th>
+      <td>0284</td>
+      <td>69</td>
+      <td>314761</td>
+      <td>0.021921</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td>0032</td>
+      <td>64</td>
+      <td>312775</td>
+      <td>0.020462</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>0008</td>
+      <td>61</td>
+      <td>265550</td>
+      <td>0.022971</td>
+    </tr>
+    <tr>
+      <th>24</th>
+      <td>0057</td>
+      <td>59</td>
+      <td>2287631</td>
+      <td>0.002579</td>
+    </tr>
+    <tr>
+      <th>62</th>
+      <td>0638</td>
+      <td>59</td>
+      <td>151174</td>
+      <td>0.039028</td>
+    </tr>
+    <tr>
+      <th>53</th>
+      <td>0557</td>
+      <td>47</td>
+      <td>83790</td>
+      <td>0.056093</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>0011</td>
+      <td>43</td>
+      <td>62699</td>
+      <td>0.068582</td>
+    </tr>
+    <tr>
+      <th>30</th>
+      <td>0085</td>
+      <td>42</td>
+      <td>40422</td>
+      <td>0.103904</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>0014</td>
+      <td>34</td>
+      <td>278686</td>
+      <td>0.012200</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>0016</td>
+      <td>32</td>
+      <td>185124</td>
+      <td>0.017286</td>
+    </tr>
+    <tr>
+      <th>75</th>
+      <td>2042</td>
+      <td>23</td>
+      <td>205354</td>
+      <td>0.011200</td>
+    </tr>
+    <tr>
+      <th>43</th>
+      <td>0526</td>
+      <td>23</td>
+      <td>468269</td>
+      <td>0.004912</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0007</td>
+      <td>22</td>
+      <td>526840</td>
+      <td>0.004176</td>
+    </tr>
+    <tr>
+      <th>51</th>
+      <td>0554</td>
+      <td>20</td>
+      <td>34919</td>
+      <td>0.057275</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>0013</td>
+      <td>16</td>
+      <td>15919</td>
+      <td>0.100509</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+
+Sure enough, Homer (0012) is in third, alongside the likes of Lucian of Samosata (0062) and Plato (0059). However, as fans of lexical dispersion will comment, high volume of a feature does not always correlate with a strong consistency throughout one’s work to use it.
     </body>
     </html>
