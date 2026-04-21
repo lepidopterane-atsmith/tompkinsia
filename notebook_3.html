@@ -9,14 +9,14 @@
   <body>
 
 <div id="notebook" style="padding: 5px"> <h1>The Verse End Formula</h1>
-        <p>The verbatim claim: “λελωφήκαμεν: rather rare, used by Thuc. with reference to sicknesses and grave misfortunes.”</p>
-        <p>Our interpretation: 1) rather rare = the odds of picking a verb with this lemma (λωφάω) from all verbs in the Perseus corpus is not very likely and 2) λελωφήκαμεν usually occurs in a context when Thucydides is discussing “sicknesses and grave misfortunes.”</p>
-        <h2>0) Requirements</h2>
+        <p>The verbatim claim: “ἔπος ηὔδα: a VE formula (14x Il., 1x Od.); always with a preceding participle that determines the tone of the following speech more precisely (ὁμοκλήσας only here; elsewhere δακρύσας, εὐχόμενος, ὀλοφὐρομενος, etc.).”</p>
+        <p>Our interpretation: 1) If ἔπος ηὔδα is a VE formula, because VE means verse end, these words are found next to each other at the end of a line, and 2) ἔπος ηὔδα will always be preceded within the line by a participle.</p>
+        <h2>Requirements</h2>
         <p>To run and tweak this analysis, you will need the following:</p>
         <ul><li><p>this notebook</p></li><li><p>all_verb_lemmata.csv (counts of every verb’s lemma in the Perseus corpus)</p></li>
           <li><p>the <a target="_blank" rel="noreferrer" href="https://pandas.pydata.org/docs/getting_started/index.html#installation" class="link">pandas</a> library</p></li></ul>
 
-        <h2>1) Rarity</h2>
+        <h2>A Formulaic Search</h2>
         <p>First, let’s import some necessary libraries and look at <strong>all_verb_lemmata.csv,</strong> which we can see is a list of verb lemmas and the number of times they occur in the Perseus corpus.</p>
 
         <pre class="block overflow-auto p-3 myst-code-body hljs" style="background-color:#FFFF88"><code class="language-python" style="white-space:pre"><span><span class="hljs-keyword">import</span><span> pandas </span><span class="hljs-keyword">as</span><span> pd
