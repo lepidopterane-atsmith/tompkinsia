@@ -20,56 +20,22 @@
         <h2>1) ἅρμα</h2>
         <p>First, let’s import some necessary libraries. This second one is our bespoke query library for the Greek lit corpus.</p> 
         
-        <h3> CODE PLACEHOLDER  </h3>
+        <pre class="block overflow-auto p-3 myst-code-body hljs" style="background-color:#FFFF88"><code class="language-python" ><span><span class="hljs-keyword">import</span><span> pandas </span><span class="hljs-keyword">as</span><span> pd
+</span></span><span><span></span><span class="hljs-keyword">from</span><span> simple_query </span><span class="hljs-keyword">import</span><span> create_engine_from_files, word_search, all_urns</span></span></code></pre>
         
-        <p>For this objective, let's search our Greek lit corpus for instances of ἀγκύλov with ἅρμα. Opening the Iliad's treebank (LINK) and searching for subdoc="6.38-6.43" gives us exactly where these two words are, and when the noun's head node is the adjective with the ATR relation, that just means the adjective modifies the noun. Let's see if there's anything like this in the Greek lit corpus: </p>
+        <p>For this objective, let's search our Greek lit corpus for instances of ἀγκύλov with ἅρμα. Opening the Iliad's <a href="https://raw.githubusercontent.com/lepidopterane-atsmith/pseudw_python/refs/heads/main/data/xml/0012-001.xml">treebank</a> and searching for subdoc="6.38-6.43" gives us exactly where these two words are, and when the noun's head node is the adjective with the ATR relation, that just means the adjective modifies the noun. Let's see if there's anything like this in the Greek lit corpus: </p>
 
-        <pre class="block overflow-auto p-3 myst-code-body hljs" style="background-color:#FFFF88"><code class="language-python" style="white-space:pre"><span><span class="hljs-keyword">import</span><span> pandas </span><span class="hljs-keyword">as</span><span> pd
+        <pre class="block overflow-auto p-3 myst-code-body hljs" style="background-color:#FFFF88"><code class="language-python" style="white-space:pre"><span><span>results = pd.DataFrame({</span><span class="hljs-string">'Form'</span><span>: pd.Series([]), </span><span class="hljs-string">'Lemma'</span><span>: pd.Series([]), </span><span class="hljs-string">'Part of Speech'</span><span>: pd.Series([]),</span><span class="hljs-string">'Case'</span><span>: pd.Series([]), </span><span class="hljs-string">'Number'</span><span>: pd.Series([]), </span><span class="hljs-string">'Tense'</span><span>: pd.Series([]),
+</span></span><span><span>                        </span><span class="hljs-string">'Mood'</span><span>: pd.Series([]), </span><span class="hljs-string">'Voice'</span><span>: pd.Series([]), </span><span class="hljs-string">'Relation'</span><span>: pd.Series([]), </span><span class="hljs-string">'Sentence ID'</span><span>: pd.Series([]), </span><span class="hljs-string">'Word ID'</span><span>: pd.Series([]), 
+</span></span><span><span>                        </span><span class="hljs-string">'Document URN'</span><span>: pd.Series([])})
 </span></span><span>
-</span><span><span>lemmata = pd.read_csv(</span><span class="hljs-string">'../all_verb_lemmata.csv'</span><span>)
-</span></span><span><span>lemmata.sort_values(</span><span class="hljs-string">'count'</span><span>, ascending=</span><span class="hljs-literal">False</span><span>)[:</span><span class="hljs-number">20</span><span>]</span></span></code></pre>
-
-<div class="lm-Widget jp-OutputPrompt jp-OutputArea-prompt">[28]:</div><div class="lm-Widget jp-RenderedHTMLCommon jp-RenderedHTML jp-mod-trusted jp-OutputArea-output" data-mime-type="text/html"><div>
-
-<table border="1" border-collapse="collapse" border-style="single" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>lemma</th>
-      <th>count</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th> 1050 </th>
-      <td> εἰμί </td>
-      <td> 209433 </td>
-    </tr>
-  </tbody>
-</table>
-
-<p> If you double check the singleton result in the Iliad treebank from earlier, you'll see it's the instance this claim was about. That means this is the only instance of ἀγκύλov modifying ἅρμα after all. But what about that epithet? </p>
-
-<h2><span class="heading-text">2) Epithet Frequency</span></h2>
-
-<p>If ἀγκύλov occurs with τόξov at a frequency above the expected frequency, it is an epithet. To calculate the expected frequency, we need to know how often </p>
-<p> if ἀγκύλov occurs with τόξov at a frequency above the expected frequency, it is an epithet. </p>
-
-
-<!-- ehehhehe -->
-<pre class="block overflow-auto p-3 myst-code-body hljs"><code class="language-python" style="white-space:pre"><span><span class="hljs-keyword">from</span><span> simple_query </span><span class="hljs-keyword">import</span><span> create_engine_from_files, word_search
+</span><span><span></span><span class="hljs-keyword">for</span><span> i </span><span class="hljs-keyword">in</span><span> all_urns:
+</span></span><span>    query_engine = create_engine_from_files(urns=[i])
+</span><span><span>    results = pd.concat([results, word_search(query_engine, </span><span class="hljs-string">"ἅρμα &gt; ἀγκύλος[relation=ATR]"</span><span> )])
 </span></span><span>
-</span><span><span>query_engine = create_engine_from_files(urns=[</span><span class="hljs-string">'0003-001'</span><span>, </span><span class="hljs-string">'0003-002'</span><span>])
-</span></span><span><span>results = word_search(query_engine, </span><span class="hljs-string">"λωφάω"</span><span>)
-</span></span><span>results</span></code></pre>
+</span><span>results</span></code></pre>
 
-<pre class="myst-jp-stream-output text-sm font-thin font-system" style="background-color: unset;"><code><span>URNs in system:  2
-loading  2  items...
-6055
-λωφάω
-</span></code></pre>
-
-<div class="lm-Widget jp-RenderedHTMLCommon jp-RenderedHTML jp-mod-trusted jp-OutputArea-output" data-mime-type="text/html"><div>
+<div class="lm-Widget lm-Panel jp-OutputArea-child jp-OutputArea-executeResult"><div class="lm-Widget jp-OutputPrompt jp-OutputArea-prompt">[2]:</div><div class="lm-Widget jp-RenderedHTMLCommon jp-RenderedHTML jp-mod-trusted jp-OutputArea-output" data-mime-type="text/html"><div>
 <style scoped="">
     .dataframe tbody tr th:only-of-type {
         vertical-align: middle;
@@ -83,7 +49,7 @@ loading  2  items...
         text-align: right;
     }
 </style>
-<table border="1" class="dataframe" style="font-size: small;">
+<table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -104,107 +70,440 @@ loading  2  items...
   <tbody>
     <tr>
       <th>0</th>
-      <td>λωφήσαντα</td>
-      <td>λωφάω</td>
-      <td>verb</td>
+      <td>ἀγκύλον</td>
+      <td>ἀγκύλος</td>
+      <td>adjective</td>
       <td>accusative</td>
       <td>singular</td>
-      <td>aorist</td>
       <td></td>
-      <td>active</td>
+      <td></td>
+      <td></td>
       <td>ATR</td>
-      <td>1281</td>
-      <td>7271687</td>
-      <td>0003-001</td>
+      <td>1836</td>
+      <td>9229550</td>
+      <td>0012-001</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+
+<p> If you double check the singleton result in the Iliad treebank from earlier, you'll see it's the instance this claim was about. That means this is the only instance of ἀγκύλov modifying ἅρμα after all. But what about that epithet? </p>
+
+<h2><span class="heading-text">2) Epithet Frequency</span></h2>
+
+<div id="wp9p7JGeEu" class="myst-jp-nb-block relative group/block"><p>If ἀγκύλov occurs with τόξov at an observed frequency above the expected frequency, it is an epithet. Our expected frequency formula looks a little like this:</p><p><strong>expected frequency</strong> = ( (instances of ἀγκύλov with an object) * (instances of τόξov with an adjective) * 2 )/ (total word tokens in every work one of these words show up in)</p><p>Let’s look for τόξov first.</p></div>
+
+<!-- ehehhehe -->
+<pre class="block overflow-auto p-3 myst-code-body hljs"><code class="language-python" style="white-space:pre"><span><span>results = pd.DataFrame({</span><span class="hljs-string">'Form'</span><span>: pd.Series([]), </span><span class="hljs-string">'Lemma'</span><span>: pd.Series([]), </span><span class="hljs-string">'Part of Speech'</span><span>: pd.Series([]),</span><span class="hljs-string">'Case'</span><span>: pd.Series([]), </span><span class="hljs-string">'Number'</span><span>: pd.Series([]), </span><span class="hljs-string">'Tense'</span><span>: pd.Series([]),
+</span></span><span><span>                        </span><span class="hljs-string">'Mood'</span><span>: pd.Series([]), </span><span class="hljs-string">'Voice'</span><span>: pd.Series([]), </span><span class="hljs-string">'Relation'</span><span>: pd.Series([]), </span><span class="hljs-string">'Sentence ID'</span><span>: pd.Series([]), </span><span class="hljs-string">'Word ID'</span><span>: pd.Series([]), 
+</span></span><span><span>                        </span><span class="hljs-string">'Document URN'</span><span>: pd.Series([])})
+</span></span><span>
+</span><span><span></span><span class="hljs-keyword">for</span><span> i </span><span class="hljs-keyword">in</span><span> all_urns:
+</span></span><span>    query_engine = create_engine_from_files(urns=[i])
+</span><span><span>    results = pd.concat([results, word_search(query_engine, </span><span class="hljs-string">"τόξον &gt; :adjective[relation=ATR]"</span><span> )])
+</span></span><span>
+</span><span><span></span><span class="hljs-built_in">print</span><span>(</span><span class="hljs-string">"τόξον count: "</span><span>, </span><span class="hljs-built_in">len</span><span>(results))</span></span></code>></pre>
+
+<pre class="myst-jp-stream-output text-sm font-thin font-system" style="background-color: unset;"><code><span>URNs in system:  2
+τόξον count:  166
+</span></code></pre>
+
+<p>That’s a lot. Now, let’s look for how many ἀγκύλονs are modifying something like a good adjective should.</p>
+
+<pre style="padding:5;margin:0;"><code class="language-python" style="white-space:pre"><span><span>results = pd.DataFrame({</span><span class="hljs-string">'Form'</span><span>: pd.Series([]), </span><span class="hljs-string">'Lemma'</span><span>: pd.Series([]), </span><span class="hljs-string">'Part of Speech'</span><span>: pd.Series([]),</span><span class="hljs-string">'Case'</span><span>: pd.Series([]), </span><span class="hljs-string">'Number'</span><span>: pd.Series([]), </span><span class="hljs-string">'Tense'</span><span>: pd.Series([]),
+</span></span><span><span>                        </span><span class="hljs-string">'Mood'</span><span>: pd.Series([]), </span><span class="hljs-string">'Voice'</span><span>: pd.Series([]), </span><span class="hljs-string">'Relation'</span><span>: pd.Series([]), </span><span class="hljs-string">'Sentence ID'</span><span>: pd.Series([]), </span><span class="hljs-string">'Word ID'</span><span>: pd.Series([]), 
+</span></span><span><span>                        </span><span class="hljs-string">'Document URN'</span><span>: pd.Series([])})
+</span></span><span>
+</span><span><span></span><span class="hljs-keyword">for</span><span> i </span><span class="hljs-keyword">in</span><span> all_urns:
+</span></span><span>    query_engine = create_engine_from_files(urns=[i])
+</span><span><span>    results = pd.concat([results, word_search(query_engine, </span><span class="hljs-string">"ἀγκύλος[relation=ATR]"</span><span> )])
+</span></span><span>
+</span><span><span></span><span class="hljs-built_in">print</span><span>(</span><span class="hljs-string">"ἀγκύλον count: "</span><span>, </span><span class="hljs-built_in">len</span><span>(results))</span></span></code></pre>
+
+<pre class="myst-jp-stream-output text-sm font-thin font-system" style="background-color: unset;"><code><span>URNs in system:  2
+ἀγκύλον count:  20
+</span></code></pre>
+
+<p>That’s a smaller number than for the other word, but it’s small enough to spot check. How many of those results contain both words?</p>
+
+<pre style="padding:5;margin:0;"><code class="language-python" style="white-space:pre"><span><span>results</span></span></code></pre>
+
+<div class="lm-Widget jp-OutputPrompt jp-OutputArea-prompt">[5]:</div><div class="lm-Widget jp-RenderedHTMLCommon jp-RenderedHTML jp-mod-trusted jp-OutputArea-output" data-mime-type="text/html"><div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Form</th>
+      <th>Lemma</th>
+      <th>Part of Speech</th>
+      <th>Case</th>
+      <th>Number</th>
+      <th>Tense</th>
+      <th>Mood</th>
+      <th>Voice</th>
+      <th>Relation</th>
+      <th>Sentence ID</th>
+      <th>Word ID</th>
+      <th>Document URN</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>ἀγκύλα</td>
+      <td>ἀγκύλος</td>
+      <td>adjective</td>
+      <td>accusative</td>
+      <td>plural</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>ATR</td>
+      <td>1292</td>
+      <td>659527</td>
+      <td>0001-001</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>λώφησιν</td>
-      <td>λωφάω</td>
-      <td>verb</td>
-      <td></td>
+      <td>ἀγκύλον</td>
+      <td>ἀγκύλος</td>
+      <td>adjective</td>
+      <td>accusative</td>
       <td>singular</td>
-      <td>present</td>
-      <td>indicative</td>
-      <td>active</td>
-      <td>CO</td>
-      <td>3038</td>
-      <td>7318243</td>
-      <td>0003-001</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>ATR</td>
+      <td>1539</td>
+      <td>662737</td>
+      <td>0001-001</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>ἀγκύλον</td>
+      <td>ἀγκύλος</td>
+      <td>adjective</td>
+      <td>accusative</td>
+      <td>singular</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>ATR</td>
+      <td>1216</td>
+      <td>618906</td>
+      <td>0005-001</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>ἀγκύλον</td>
+      <td>ἀγκύλος</td>
+      <td>adjective</td>
+      <td>accusative</td>
+      <td>singular</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>ATR</td>
+      <td>134</td>
+      <td>16685523</td>
+      <td>0007-005</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>ἀγκύλα</td>
+      <td>ἀγκύλος</td>
+      <td>adjective</td>
+      <td>accusative</td>
+      <td>plural</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>ATR</td>
+      <td>1435</td>
+      <td>9223609</td>
+      <td>0012-001</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>ἀγκύλον</td>
+      <td>ἀγκύλος</td>
+      <td>adjective</td>
+      <td>accusative</td>
+      <td>singular</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>ATR</td>
+      <td>1836</td>
+      <td>9229550</td>
+      <td>0012-001</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>λελωφήκαμεν</td>
-      <td>λωφάω</td>
-      <td>verb</td>
-      <td></td>
+      <td>ἀγκύλα</td>
+      <td>ἀγκύλος</td>
+      <td>adjective</td>
+      <td>accusative</td>
       <td>plural</td>
-      <td>perfect</td>
-      <td>indicative</td>
-      <td>active</td>
-      <td>OBJ</td>
-      <td>4150</td>
-      <td>7348288</td>
-      <td>0003-001</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>ATR</td>
+      <td>1977</td>
+      <td>9231810</td>
+      <td>0012-001</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>ἀγκύλα</td>
+      <td>ἀγκύλος</td>
+      <td>adjective</td>
+      <td>accusative</td>
+      <td>plural</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>ATR</td>
+      <td>5854</td>
+      <td>9420470</td>
+      <td>0012-002</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>ἀγκύλαις</td>
+      <td>ἀγκύλος</td>
+      <td>adjective</td>
+      <td>dative</td>
+      <td>plural</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>ATR</td>
+      <td>197</td>
+      <td>79647</td>
+      <td>0019-002</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>ἀγκύλον</td>
+      <td>ἀγκύλος</td>
+      <td>adjective</td>
+      <td>accusative</td>
+      <td>singular</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>ATR</td>
+      <td>457</td>
+      <td>15825825</td>
+      <td>0023-001</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>ἀγκύλον</td>
+      <td>ἀγκύλος</td>
+      <td>adjective</td>
+      <td>accusative</td>
+      <td>singular</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>ATR</td>
+      <td>740</td>
+      <td>15830884</td>
+      <td>0023-001</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>ἀγκύλοι</td>
+      <td>ἀγκύλος</td>
+      <td>adjective</td>
+      <td>nominative</td>
+      <td>plural</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>ATR</td>
+      <td>1330</td>
+      <td>15841283</td>
+      <td>0023-001</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>λωφήσειαν</td>
-      <td>λωφάω</td>
-      <td>verb</td>
-      <td></td>
+      <td>ἀγκύλα</td>
+      <td>ἀγκύλος</td>
+      <td>adjective</td>
+      <td>accusative</td>
       <td>plural</td>
-      <td>aorist</td>
-      <td>optative</td>
-      <td>active</td>
-      <td>PRED</td>
-      <td>5273</td>
-      <td>7382417</td>
-      <td>0003-001</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>ATR</td>
+      <td>1347</td>
+      <td>15841601</td>
+      <td>0023-001</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>ἀγκύλα</td>
+      <td>ἀγκύλος</td>
+      <td>adjective</td>
+      <td>accusative</td>
+      <td>plural</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>ATR</td>
+      <td>264</td>
+      <td>22039581</td>
+      <td>0024-001</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>ἀγκύλῳ</td>
+      <td>ἀγκύλος</td>
+      <td>adjective</td>
+      <td>dative</td>
+      <td>singular</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>ATR</td>
+      <td>4</td>
+      <td>491398</td>
+      <td>0033-002</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>ἀγκύλον</td>
+      <td>ἀγκύλος</td>
+      <td>adjective</td>
+      <td>accusative</td>
+      <td>singular</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>ATR</td>
+      <td>43</td>
+      <td>14208159</td>
+      <td>0062-037</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>ἀγκύλον</td>
+      <td>ἀγκύλος</td>
+      <td>adjective</td>
+      <td>accusative</td>
+      <td>singular</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>ATR</td>
+      <td>56</td>
+      <td>14358112</td>
+      <td>0062-068</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>ἀγκύλης</td>
+      <td>ἀγκύλος</td>
+      <td>adjective</td>
+      <td>genitive</td>
+      <td>singular</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>ATR</td>
+      <td>67</td>
+      <td>713676</td>
+      <td>0341-002</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>ἀγκύλος</td>
+      <td>ἀγκύλος</td>
+      <td>adjective</td>
+      <td>nominative</td>
+      <td>singular</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>ATR</td>
+      <td>8</td>
+      <td>10008738</td>
+      <td>0719-001</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>ἀγκύλον</td>
+      <td>ἀγκύλος</td>
+      <td>adjective</td>
+      <td>accusative</td>
+      <td>singular</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>ATR</td>
+      <td>8201</td>
+      <td>19937746</td>
+      <td>2042-001</td>
     </tr>
   </tbody>
 </table>
 </div></div>
 
-<p>As you can see, there are four instances in the History, which we will look at one by one. We can open up the History’s <a target="_blank" rel="noreferrer" href="https://github.com/lepidopterane-atsmith/tompkinsia/raw/refs/heads/main/comment_01/data/xml/0003-001.xml" class="link">treebank file</a> and use cmd/ctrl + F to search for <code>sentence id=</code><strong>“Sentence ID in the table above”</strong> and match those to subdoc notes and the first four words, as seen in the following subsections. This makes sure we are looking at the right instance, and you can do something similar with the Word ID.</p>
+<p>Using the URNs and word IDs, 5 of 20 results here were confirmed to be ἀγκύλον modifying τόξον, making that our observed frequency. But we still need the total word tokens in every work one of these words show up in.</p>
 
-<p>For each of these four instances, we will take a closer look and assess whether each instance supports or invalidates this assumption. Each passage is accompanied by translations from Charles Foster’s early 1900s editions.</p>
+<pre style="padding:5;margin:0;"><code class="language-python" style="white-space:pre"><span><span>confirmed_urns = [</span><span class="hljs-string">'0001-001'</span><span>, </span><span class="hljs-string">'0005-001'</span><span>,</span><span class="hljs-string">'0007-001'</span><span>,</span><span class="hljs-string">'0006-009'</span><span>,</span><span class="hljs-string">'0006-010'</span><span>,</span><span class="hljs-string">'0006-015'</span><span>,</span><span class="hljs-string">'0006-016'</span><span>,</span><span class="hljs-string">'0006-019'</span><span>,</span><span class="hljs-string">'0007-024'</span><span>,</span><span class="hljs-string">'0007-033'</span><span>,
+</span></span><span><span>                  </span><span class="hljs-string">'0007-039'</span><span>,</span><span class="hljs-string">'0008-001'</span><span>,</span><span class="hljs-string">'0011-001'</span><span>,</span><span class="hljs-string">'0011-006'</span><span>,</span><span class="hljs-string">'0012-001'</span><span>,</span><span class="hljs-string">'0012-002'</span><span>,</span><span class="hljs-string">'0013-003'</span><span>,</span><span class="hljs-string">'0013-004'</span><span>,</span><span class="hljs-string">'0013-005'</span><span>,</span><span class="hljs-string">'0013-027'</span><span>,
+</span></span><span><span>                  </span><span class="hljs-string">'0016-001'</span><span>,</span><span class="hljs-string">'0019-002'</span><span>,</span><span class="hljs-string">'0019-008'</span><span>,</span><span class="hljs-string">'0023-001'</span><span>,</span><span class="hljs-string">'0024-001'</span><span>,</span><span class="hljs-string">'0032-006'</span><span>,</span><span class="hljs-string">'0033-001'</span><span>,</span><span class="hljs-string">'0033-002'</span><span>,</span><span class="hljs-string">'0035-001'</span><span>,</span><span class="hljs-string">'0035-006'</span><span>,
+</span></span><span><span>                  </span><span class="hljs-string">'0057-100'</span><span>,</span><span class="hljs-string">'0059-039'</span><span>,</span><span class="hljs-string">'0060-001'</span><span>,</span><span class="hljs-string">'0062-037'</span><span>,</span><span class="hljs-string">'0062-062'</span><span>,</span><span class="hljs-string">'0062-068'</span><span>,</span><span class="hljs-string">'0067-001'</span><span>,</span><span class="hljs-string">'0074-005'</span><span>,</span><span class="hljs-string">'0085-002'</span><span>,</span><span class="hljs-string">'0085-003'</span><span>,
+</span></span><span><span>                  </span><span class="hljs-string">'0085-006'</span><span>,</span><span class="hljs-string">'0085-007'</span><span>,</span><span class="hljs-string">'0099-001'</span><span>,</span><span class="hljs-string">'0199-001'</span><span>,</span><span class="hljs-string">'0219-002'</span><span>,</span><span class="hljs-string">'0261-003'</span><span>,</span><span class="hljs-string">'0284-049'</span><span>,</span><span class="hljs-string">'0341-002'</span><span>,</span><span class="hljs-string">'0525-001'</span><span>,</span><span class="hljs-string">'0532-001'</span><span>,
+</span></span><span><span>                  </span><span class="hljs-string">'0533-003'</span><span>,</span><span class="hljs-string">'0533-004'</span><span>,</span><span class="hljs-string">'0533-016'</span><span>,</span><span class="hljs-string">'0533-017'</span><span>,</span><span class="hljs-string">'0533-018'</span><span>,</span><span class="hljs-string">'0545-002'</span><span>,</span><span class="hljs-string">'0548-001'</span><span>,</span><span class="hljs-string">'0551-008'</span><span>,</span><span class="hljs-string">'0559-012'</span><span>,</span><span class="hljs-string">'0638-003'</span><span>,
+</span></span><span><span>                  </span><span class="hljs-string">'0653-001'</span><span>,</span><span class="hljs-string">'0719-001'</span><span>,</span><span class="hljs-string">'1252-002'</span><span>,</span><span class="hljs-string">'1431-003'</span><span>,</span><span class="hljs-string">'1600-001'</span><span>,</span><span class="hljs-string">'2042-001'</span><span>]
+</span></span><span>
+</span><span><span>results = pd.DataFrame({</span><span class="hljs-string">'Form'</span><span>: pd.Series([]), </span><span class="hljs-string">'Lemma'</span><span>: pd.Series([]), </span><span class="hljs-string">'Part of Speech'</span><span>: pd.Series([]),</span><span class="hljs-string">'Case'</span><span>: pd.Series([]), </span><span class="hljs-string">'Number'</span><span>: pd.Series([]), </span><span class="hljs-string">'Tense'</span><span>: pd.Series([]),
+</span></span><span><span>                        </span><span class="hljs-string">'Mood'</span><span>: pd.Series([]), </span><span class="hljs-string">'Voice'</span><span>: pd.Series([]), </span><span class="hljs-string">'Relation'</span><span>: pd.Series([]), </span><span class="hljs-string">'Sentence ID'</span><span>: pd.Series([]), </span><span class="hljs-string">'Word ID'</span><span>: pd.Series([]), 
+</span></span><span><span>                        </span><span class="hljs-string">'Document URN'</span><span>: pd.Series([])})
+</span></span><span>
+</span><span>all_tokens, all_punct = [], []
+</span><span>
+</span><span><span></span><span class="hljs-keyword">for</span><span> i </span><span class="hljs-keyword">in</span><span> confirmed_urns:
+</span></span><span>    query_engine = create_engine_from_files(urns=[i])
+</span><span><span>    all_punct.append(</span><span class="hljs-built_in">len</span><span>(word_search(query_engine, </span><span class="hljs-string">":punctuation"</span><span> ))) 
+</span></span><span><span>    all_tokens.append(</span><span class="hljs-built_in">len</span><span>(word_search(query_engine, </span><span class="hljs-string">":neighbor"</span><span> ))) </span><span class="hljs-comment"># grabs all tokens including punctuation</span><span>
+</span></span><span>
+</span><span><span>all_words = </span><span class="hljs-built_in">sum</span><span>(all_tokens) - </span><span class="hljs-built_in">sum</span><span>(all_punct)
+</span></span><span><span></span><span class="hljs-built_in">print</span><span>(</span><span class="hljs-string">"all words :"</span><span>, all_words)</span></span></code></pre>
 
-<h3 id="instance-1-2-49-4" class="relative group"><span class="heading-text">Instance 1: 2.49.4, Sentence ID 1281, λύγξ τε τοῖς πλέοσιν</span></h3>
+<pre class="myst-jp-stream-output text-sm font-thin font-system" style="background-color: unset;"><code><span>URNs in system:  2
+all words : 2350208
+</span></code></pre>
 
-<blockquote><p>λύγξ τε τοῖς πλέοσιν ἐνέπιπτε κενή, σπασμὸν ἐνδιδοῦσα ἰσχυρόν, τοῖς μὲν μετὰ ταῦτα λωφήσαντα, τοῖς δὲ καὶ πολλῷ ὕστερον.</p></blockquote>
+<p>Now that we have our numbers, let’s calculate that expected frequency.</p>
 
-<blockquote><p>...and in most cases ineffectual retching followed producing violent convulsions, which sometimes abated directly, sometimes not until long afterwards.</p></blockquote>
+<pre style="padding:5;margin:0;"><code class="language-python" style="white-space:pre"><span><span>numerator = </span><span class="hljs-number">2</span><span> * </span><span class="hljs-number">166</span><span> * </span><span class="hljs-number">20</span><span>
+</span></span><span>expected_freq = numerator / all_words
+</span><span><span></span><span class="hljs-built_in">print</span><span>(</span><span class="hljs-string">"expected frequency: "</span><span>, expected_freq)</span></span></code></pre>
 
-<p>This passage documents symptoms of the Athenian Plague, which was happening at the same time as the Peloponessian War. λωφήσαντα is certainly used in the context of a sickness.</p>
+<pre class="myst-jp-stream-output text-sm font-thin font-system" style="background-color: unset;"><code><span>URNs in system:  2
+expected frequency:  0.0028252818473939326
+</span></code></pre>
 
-<h3 id="instance-2-4-81-2" class="relative group"><span class="heading-text">Instance 2: 4.81.2, Sentence ID 3038, τό τε γὰρ παραυτίκα</span></h3>
-
-<blockquote><p>τό τε γὰρ παραυτίκα ἑαυτὸν παρασχὼν δίκαιον καὶ μέτριον ἐς τὰς πόλεις ἀπέστησε τὰ πολλά, τὰ δὲ προδοσίᾳ εἷλε τῶν χωρίων, ὥστε τοῖς Λακεδαιμονίοις γίγνεσθαι ξυμβαίνειν τε βουλομένοις, ὅπερ ἐποίησαν, ἀνταπόδοσιν καὶ ἀποδοχὴν χωρίων καὶ τοῦ πολέμου ἀπὸ τῆς Πελοποννήσου λώφησιν· ἔς τε τὸν χρόνῳ ὕστερον μετὰ τὰ ἐκ Σικελίας πόλεμον ἡ τότε Βρασίδου ἀρετὴ καὶ ξύνεσις, τῶν μὲν πείρᾳ αἰσθομένων, τῶν δὲ ἀκοῇ νομισάντων, μάλιστα ἐπιθυμίαν ἐνεποίει τοῖς Ἀθηναίων ξυμμάχοις ἐς τοὺς Λακεδαιμονίους.</p></blockquote>
-
-<blockquote><p>For, at the present crisis, by showing himself just and moderate in his dealings with the cities he caused most of the places to revolt, and secured possession of others by the treachery of their inhabitants, so that when the Lacedaemonians wished to make terms with Athens, as they did ultimately, they had places to offer in exchange for places they wished to recover and were able to secure for the Peloponnesus a respite from the war; and in the later part of the war, after the events in Sicily, it was the virtue and tact which Brasidas had displayed at this time—qualities of which some had had experience, while others knew of them by report—that did most to inspire in the allies of the Athenians a sentiment favourable to the Lacedaemonians.</p></blockquote>
-
-<p>Foster translates λώφησιν as respite, as it is actually from the noun λώφησις and not the verb λωφάω. Technically, this does not count as an instance of λωφάω and will not be assessed, though it should be known that this word was mislabeled as a form of λωφάω in the treebanks being searched over for this part of the analysis.</p>
-
-<h3 id="instance-3-6-12-1" class="relative group"><span class="heading-text">Instance 3: 6.12.1, Sentence ID 4150, ‘καὶ μεμνῆσθαι χρὴ ἡμᾶς</span></h3>
-
-<blockquote><p>‘καὶ μεμνῆσθαι χρὴ ἡμᾶς ὅτι νεωστὶ ἀπὸ νόσου μεγάλης καὶ πολέμου βραχύ τι λελωφήκαμεν, ὥστε καὶ χρήμασι καὶ τοῖς σώμασιν ηὐξῆσθαι·</p></blockquote>
-
-<blockquote><p>And we should remember that we have but lately recovered somewhat from a great pestilence and war, so as to recruit our strength both in money and in men;</p></blockquote>
-
-<p>Nicias is purposely invoking the Athenian recovery from the Athenian Plague, using the λελωφήκαμεν this comment and its claim are anchored on, in the context of a sickness.</p>
-
-<h3 id="instance-4-7-77-3" class="relative group"><span class="heading-text">Instance 4: 7.77.3, Sentence ID 5273, τάχα δὲ ἂν καὶ</span></h3>
-
-<blockquote><p>ἀνθ’ ὧν ἡ μὲν ἐλπὶς ὅμως θρασεῖα τοῦ μέλλοντος, αἱ δὲ ξυμφοραὶ οὐ κατ’ ἀξίαν δὴ φοβοῦσιν. τάχα δὲ ἂν καὶ λωφήσειαν· ἱκανὰ γὰρ τοῖς τε πολεμίοις ηὐτύχηται, καὶ εἴ τῳ θεῶν ἐπίφθονοι ἐστρατεύσαμεν, ἀποχρώντως ἤδη τετιμωρήμεθα.</p></blockquote>
-
-<blockquote><p>Wherefore, in spite of all, my hope for the future is still confident, and our calamities do not frighten me as much as they might well have done. Perhaps they may even abate; for our enemies have had good fortune enough, and if we have roused the jealousy of any of the gods by our expedition we have already been punished sufficiently.</p></blockquote>
-
-<p>Nicias is using what he knows of rhetoric and past Athenian might to reinvigorate Athenian forces that have recently experienced a great loss. His language is somewhat ambiguous as he documents times when in the face of some calamity Athenians find a way forward nonetheless, but this seems more entrenched in the “grave misfortunes” part of the claim than the “sicknesses” part.</p>
-
-<p>Smith says that Thucydides usually uses this in the context of grave misfortunes and sicknesses, leading the uncritical reader to assume that he uses this lemma more than three times, and that there may be some instances that occur not in the context of sickness but in the former context, along with a handful of instances that do not mention sickness or misfortune. The analysis in this notebook shows that Thucydides uses this word thrice, always in the context of the Athenian Plague, except for when Nicias is discussing grave misfortunes past and present in 7.77.3, and there is no direct mention of the plague. While this could validate Smith’s comment, it would be remiss not to remark that the wording of the claim misleads the author to believe that this is a more frequent and less specific pattern than it is. Combined with earlier confirmation that λωφάω is in fact rare, we find here that these claims hold up, even if the wording on one is somewhat misleading.</p>
-      
-      </div>
+<p>Well, an observed frequency of 5 is higher than this expected frequency. Therefore, this claim holds up on both accounts.</p>
 
     </body>
     </html>
