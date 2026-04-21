@@ -10,15 +10,19 @@
 
 <div id="notebook" style="padding: 5px"> <h1>The Bow Stratagem</h1>
         <p>The verbatim claim: “<strong>ἀγκύλov:</strong> with ἅρμα only here (likely in reference to the curved edge of the chariot body), otherwise an epithet of bows (3x Il./Od. ἀγκύλα τόξα);”</p>
-        <p>Our interpretation: 1) This is the only instance of ἀγκύλov with ἅρμα and 2) ἀγκύλov occurs with τόξov sufficiently to be considered an epithet. </p>
+        <p>Our interpretation: 1) This is the only instance of ἀγκύλov with ἅρμα and 2) if ἀγκύλov occurs with τόξov at a frequency above the expected frequency, it is an epithet. </p>
         
-        <h2>0) Requirements</h2>
+        <h2>0) Requirements EDIT MEEE </h2>
         <p>To run and tweak this analysis, you will need the following:</p>
         <ul><li><p>this notebook</p></li><li><p>all_verb_lemmata.csv (counts of every verb’s lemma in the Perseus corpus)</p></li>
           <li><p>the <a target="_blank" rel="noreferrer" href="https://pandas.pydata.org/docs/getting_started/index.html#installation" class="link">pandas</a> library</p></li></ul>
 
-        <h2>1) Rarity</h2>
-        <p>First, let’s import some necessary libraries and look at <strong>all_verb_lemmata.csv,</strong> which we can see is a list of verb lemmas and the number of times they occur in the Perseus corpus.</p>
+        <h2>1) ἅρμα</h2>
+        <p>First, let’s import some necessary libraries. This second one is our bespoke query library for the Greek lit corpus.</p> 
+        
+        <h3> CODE PLACEHOLDER  </h3>
+        
+        <p>For this objective, let's search our Greek lit corpus for instances of ἀγκύλov with ἅρμα. Opening the Iliad's treebank (LINK) and searching for subdoc="6.38-6.43" gives us exactly where these two words are, and when the noun's head node is the adjective with the ATR relation, that just means the adjective modifies the noun. Let's see if there's anything like this in the Greek lit corpus: </p>
 
         <pre class="block overflow-auto p-3 myst-code-body hljs" style="background-color:#FFFF88"><code class="language-python" style="white-space:pre"><span><span class="hljs-keyword">import</span><span> pandas </span><span class="hljs-keyword">as</span><span> pd
 </span></span><span>
@@ -41,175 +45,16 @@
       <td> εἰμί </td>
       <td> 209433 </td>
     </tr>
-    <tr>
-      <th> 11096 </th>
-      <td> λέγω </td>
-      <td> 78161 </td>
-    </tr>
-    <tr>
-      <th> 45165 </th>
-      <td> γίγνομαι </td>
-      <td> 65809 </td>
-    </tr>
-    <tr>
-      <th> 21008 </th>
-      <td> ἔχω </td>
-      <td> 60845 </td>
-    </tr>
-    <tr>
-      <th> 25204 </th>
-      <td> ποιέω </td>
-      <td> 36583 </td>
-    </tr>
-    <tr>
-      <th> 49363 </th>
-      <td> φημί </td>
-      <td> 35067 </td>
-    </tr>
-    <tr>
-      <th> 49264 </th>
-      <td> δέω </td>
-      <td> 23717 </td>
-    </tr>
-    <tr>
-      <th> 42928 </th>
-      <td> δοκέω </td>
-      <td> 18658 </td>
-    </tr>
-    <tr>
-      <th> 14293 </th>
-      <td> ὁράω </td>
-      <td> 17522 </td>
-    </tr>
-    <tr>
-      <th> 42549 </th>
-      <td> λαμβάνω </td>
-      <td> 16627 </td>
-    </tr>
-    <tr>
-      <th> 45350 </th>
-      <td> καλέω </td>
-      <td> 14470 </td>
-    </tr>
-    <tr>
-      <th> 28383 </th>
-      <td> δίδωμι </td>
-      <td> 13962 </td>
-    </tr>
-    <tr>
-      <th> 50211 </th>
-      <td> δύναμαι </td>
-      <td> 13013 </td>
-    </tr>
-    <tr>
-      <th> 18255 </th>
-      <td> χράω </td>
-      <td> 12790 </td>
-    </tr>
-    <tr>
-      <th> 50271 </th>
-      <td> βούλομαι </td>
-      <td> 12462 </td>
-    </tr>
-    <tr>
-      <th> 16735 </th>
-      <td> οἶδα </td>
-      <td> 12020 </td>
-    </tr>
-    <tr>
-      <th> 13209 </th>
-      <td> ἔρχομαι </td>
-      <td> 11611 </td>
-    </tr>
-    <tr>
-      <th> 20480 </th>
-      <td> φαίνω </td>
-      <td> 11441 </td>
-    </tr>
-    <tr>
-      <th> 12879 </th>
-      <td> φέρω </td>
-      <td> 10231 </td>
-    </tr>
-    <tr>
-      <th> 42300 </th>
-      <td> ὑπάρχω </td>
-      <td> 10169 </td>
-    </tr>
   </tbody>
 </table>
 
-<p>These are the 20 most common lemmata in our lemma group. To evaluate how unlikely it is to pick λωφάω from this group, we should have other odds to compare it against. Calculating the same odds for the most common lemma (εἰμί), the 20th most common lemma (ὑπάρχω), and maybe one least common lemma should be a good set to help us see how rare or not rare λωφάω is. Let’s pick the least common lemma:</p>
+<p> If you double check the singleton result in the Iliad treebank from earlier, you'll see it's the instance this claim was about. That means this is the only instance of ἀγκύλov modifying ἅρμα after all. But what about that epithet? </p>
 
-<pre class="block overflow-auto p-3 myst-code-body hljs" ><code class="language-python" style="white-space:pre"><span><span>lemmata.sort_values(</span><span class="hljs-string">'count'</span><span>, ascending=</span><span class="hljs-literal">False</span><span>)[-</span><span class="hljs-number">5</span><span>:]</span></span></code></pre>
+<h2><span class="heading-text">2) Epithet Frequency</span></h2>
 
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>lemma</th>
-      <th>count</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>50471</th>
-      <td>διατμάζω</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>50470</th>
-      <td>ὑποπέτομαι</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>50469</th>
-      <td>ἀνταναμένω</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>50467</th>
-      <td>ἀπκαλύπτω</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>50464</th>
-      <td>διάπλομαι</td>
-      <td>1</td>
-    </tr>
-  </tbody>
-</table>
+<p>If ἀγκύλov occurs with τόξov at a frequency above the expected frequency, it is an epithet. To calculate the expected frequency, we need to know how often </p>
+<p> if ἀγκύλov occurs with τόξov at a frequency above the expected frequency, it is an epithet. </p>
 
-<div id="RtdJ0t5DLA" class="myst-jp-nb-block relative group/block"><p>διάπλομαι will do nicely, a single instance in a large set of lemmata is definitely rare.</p><p>Odds are calculated the following way: <strong>undesirable outcomes / desirable outcomes = x</strong> where we then say there is a 1 in x chance of the desirable outcome. In our case, let’s say that desirable outcomes are the counts associated with each lemma, and the undesirable outcomes can be calculated by subtracting each desirable outcome from the sum of everything in the <strong>count</strong> column.</p></div>
-
-<!-- this is. stretching the box. why. stop doing that  -->
-<pre ><code class="language-python" style="white-space:pre"><span><span>total_count = </span><span class="hljs-built_in">int</span><span>(lemmata[</span><span class="hljs-string">'count'</span><span>].</span><span class="hljs-built_in">sum</span><span>())
-</span></span><span>desirable_outcomes, undesirable_outcomes = [],[]
-</span><span><span>verbs = [</span><span class="hljs-string">"εἰμί"</span><span>, </span><span class="hljs-string">"ὑπάρχω"</span><span>, </span><span class="hljs-string">"λωφάω"</span><span>, </span><span class="hljs-string">"διάπλομαι"</span><span>]
-</span></span><span>
-</span><span><span></span><span class="hljs-keyword">for</span><span> i </span><span class="hljs-keyword">in</span><span> verbs:
-</span></span><span><span>    desirable_outcomes.extend(lemmata[lemmata[</span><span class="hljs-string">'lemma'</span><span>]== i][</span><span class="hljs-string">'count'</span><span>].values)
-</span></span><span><span>desirable_outcomes = [</span><span class="hljs-built_in">int</span><span>(i) </span><span class="hljs-keyword">for</span><span> i </span><span class="hljs-keyword">in</span><span> desirable_outcomes]
-</span></span><span>
-</span><span><span></span><span class="hljs-keyword">for</span><span> d </span><span class="hljs-keyword">in</span><span> desirable_outcomes:
-</span></span><span>    undesirable_outcomes.append(total_count-d)
-</span><span>
-</span><span><span></span><span class="hljs-keyword">for</span><span> e </span><span class="hljs-keyword">in</span><span> </span><span class="hljs-built_in">range</span><span>(</span><span class="hljs-number">4</span><span>):
-</span></span><span>    odds = undesirable_outcomes[e]/desirable_outcomes[e]
-</span><span><span>    </span><span class="hljs-built_in">print</span><span>(</span><span class="hljs-string">"The odds of picking"</span><span>,verbs[e],</span><span class="hljs-string">"from the lemmata group is 1 in"</span><span>,odds,</span><span class="hljs-string">"."</span><span>,sep=</span><span class="hljs-string">" "</span><span>)
-</span></span><span></span></code></pre>
-
-<code><p>The odds of picking εἰμί from the lemmata group is 1 in 9.224367697545278 .</p>
-<p>The odds of picking ὑπάρχω from the lemmata group is 1 in 209.57331104336708 .</p> 
-<p>The odds of picking λωφάω from the lemmata group is 1 in 41178.230769230766 .</p>
-<p> The odds of picking διάπλομαι from the lemmata group is 1 in 2141319.0 .
-</p></code>
-
-<p>The odds of picking λωφάω are about 200 times less than picking ὑπάρχω, and since 1 in ~40,000 is less than 1 in 10,000, which can also be thought of as the desired outcome representing .01% of a set, one could state that the occurrence of λωφάω is in fact uncommon enough to be rare. Now that we have established that λωφάω is rather rare, let us look at the second piece of this claim.</p>
-
-<h2 id="id-2-sicknesses-and-grave-misfortunes" class="relative group"><span class="heading-text">2) Sicknesses and Grave Misfortunes</span></h2>
-
-<p>First, we will look up where λωφάω occurs in Thucydides’ works using our bespoke query engine (under development).</p>
 
 <!-- ehehhehe -->
 <pre class="block overflow-auto p-3 myst-code-body hljs"><code class="language-python" style="white-space:pre"><span><span class="hljs-keyword">from</span><span> simple_query </span><span class="hljs-keyword">import</span><span> create_engine_from_files, word_search
